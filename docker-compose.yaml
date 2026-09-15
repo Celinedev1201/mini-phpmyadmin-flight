@@ -1,0 +1,65 @@
+services:
+  # Base de données du projet
+  mysql:
+    image: mysql:8.4
+    container_name: mini_phpmyadmin_mysql
+
+    # Mot de passe récupéré depuis le fichier .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+    # Le port 3306 est déjà utilisé par le MySQL installé sur Ubuntu
+    ports:
+      - "3307:3306"
+
+    # Garde les bases de données même si le conteneur est supprimé
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    # Vérifie que MySQL est prêt avant de lancer le backend
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # Backend FlightPHP
+  backend:
+    build:
+      context: ./backend
+
+    container_name: mini_phpmyadmin_backend
+
+    # Connexion du backend au conteneur MySQL
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+    ports:
+      - "8000:8000"
+
+    # Synchronise le code PHP avec le conteneur
+    volumes:
+      - ./backend:/var/www/html
+
+    # Attend que MySQL soit disponible
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # Interface React
+  frontend:
+    build:
+      context: ./frontend
+
+    container_name: mini_phpmyadmin_frontend
+
+# Stockage persistant de MySQL
+volumes:
+  mysql_data:
