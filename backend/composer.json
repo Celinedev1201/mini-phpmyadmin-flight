@@ -1,0 +1,6 @@
+{
+  "require": {
+    "php": "^8.3",
+    "flightphp/core": "^3.0"
+  }
+}
