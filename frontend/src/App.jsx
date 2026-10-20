@@ -1,4 +1,5 @@
 import CreateDatabase from "./components/CreateDatabase";
+import CreateTable from "./components/CreateTable";
 
 import { useEffect, useState } from "react";
 
@@ -119,6 +120,10 @@ function App() {
 
           {selectedDatabase ? (
             <div className="table-panel">
+              <CreateTable
+                database={selectedDatabase}
+                onCreated={() => loadTables(selectedDatabase)}
+              />
               <div className="panel-heading">
                 <span>Structure de la base</span>
                 <span>Nom</span>
