@@ -322,6 +322,151 @@ button:focus-visible {
   background: var(--champagne);
 }
 
+/*selectionner table*/
+
+.table-select {
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.table-select:hover {
+  color: var(--violet);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/*structure table*/
+.structure-scroll {
+  overflow-x: auto;
+}
+
+.structure-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.8rem;
+}
+
+.structure-table th {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--champagne);
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.structure-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--champagne);
+  color: var(--prune);
+}
+
+.structure-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.structure-table tbody tr:hover {
+  background: rgb(201 167 216 / 10%);
+}
+
+/*ajouter colonne*/
+
+.add-column {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 10px 16px;
+  align-items: end;
+  padding: 24px;
+  border-bottom: 1px solid var(--champagne);
+}
+
+.add-column label {
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.add-column label[for="column-name"] {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.add-column label[for="column-type"] {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.add-column input,
+.add-column select {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--champagne);
+  border-radius: 8px;
+  background: var(--ivory);
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+.add-column input {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.add-column select {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.add-column button {
+  grid-column: 3;
+  grid-row: 2;
+  padding: 8px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.add-column button:hover {
+  background: var(--champagne);
+}
+
+.add-column input:focus-visible,
+.add-column select:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  .add-column {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .add-column > label,
+  .add-column > input,
+  .add-column > select,
+  .add-column > button {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
 /* Zone de travail */
 
 .main-content {

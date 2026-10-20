@@ -79,3 +79,29 @@ try {
 }
     }
 );
+
+// Liste les colonnes d’une table
+Flight::route(
+    'GET /api/databases/@database/tables/@table/columns',
+    function (string $database, string $table): void {
+        $pdo = Database::connect();
+
+        $statement = $pdo->prepare(
+            'SELECT COLUMN_NAME, COLUMN_TYPE, IS_NULLABLE,
+                    COLUMN_KEY, EXTRA
+             FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = :database
+               AND TABLE_NAME = :table
+             ORDER BY ORDINAL_POSITION'
+        );
+
+        $statement->execute([
+            'database' => $database,
+            'table' => $table,
+        ]);
+
+        Flight::json([
+            'columns' => $statement->fetchAll(PDO::FETCH_ASSOC),
+        ]);
+    }
+);

@@ -1,5 +1,6 @@
 import CreateDatabase from "./components/CreateDatabase";
 import CreateTable from "./components/CreateTable";
+import TableStructure from "./components/TableStructure";
 
 import { useEffect, useState } from "react";
 
@@ -7,6 +8,7 @@ function App() {
   const [databases, setDatabases] = useState([]);
   const [tables, setTables] = useState([]);
   const [selectedDatabase, setSelectedDatabase] = useState("");
+  const [selectedTable, setSelectedTable] = useState("");
 
   async function loadDatabases() {
     try {
@@ -28,6 +30,7 @@ function App() {
   }, []);
 
   async function loadTables(database) {
+    setSelectedTable("");
     const response = await fetch(
       `/api/databases/${encodeURIComponent(database)}/tables`,
     );
@@ -118,6 +121,10 @@ function App() {
             )}
           </div>
 
+          {selectedTable && (
+            <TableStructure database={selectedDatabase} table={selectedTable} />
+          )}
+
           {selectedDatabase ? (
             <div className="table-panel">
               <CreateTable
@@ -139,7 +146,12 @@ function App() {
                       <span className="table-symbol" aria-hidden="true">
                         ▦
                       </span>
-                      <span className="table-name">{table}</span>
+                      <button
+                        className="table-name table-select"
+                        onClick={() => setSelectedTable(table)}
+                      >
+                        {table}
+                      </button>
                     </li>
                   ))}
                 </ul>
