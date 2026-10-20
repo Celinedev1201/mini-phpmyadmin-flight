@@ -1,3 +1,5 @@
+import CreateDatabase from "./components/CreateDatabase";
+
 import { useEffect, useState } from "react";
 
 function App() {
@@ -5,23 +7,22 @@ function App() {
   const [tables, setTables] = useState([]);
   const [selectedDatabase, setSelectedDatabase] = useState("");
 
-  useEffect(() => {
-    async function loadDatabases() {
-      try {
-        const response = await fetch("/api/databases");
+  async function loadDatabases() {
+    try {
+      const response = await fetch("/api/databases");
 
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        setDatabases(data.databases);
-      } catch (error) {
-        console.error("Chargement des bases impossible :", error);
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP ${response.status}`);
       }
-    }
 
+      const data = await response.json();
+      setDatabases(data.databases);
+    } catch (error) {
+      console.error("Chargement des bases impossible :", error);
+    }
+  }
+
+  useEffect(() => {
     loadDatabases();
   }, []);
 
@@ -49,6 +50,7 @@ function App() {
           <p>par Théoa</p>
         </div>
 
+        <CreateDatabase onCreated={loadDatabases} />
         <nav aria-label="Bases de données">
           <div className="nav-heading">
             <span>Bases de données</span>

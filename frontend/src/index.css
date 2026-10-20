@@ -28,7 +28,8 @@ body {
   min-width: 320px;
 }
 
-button {
+button,
+input {
   font: inherit;
 }
 
@@ -154,7 +155,7 @@ button:focus-visible {
   text-align: left;
   cursor: pointer;
   transition:
-    background 0.2s,
+    background-color 0.2s,
     border-color 0.2s,
     color 0.2s;
 }
@@ -209,6 +210,64 @@ button:focus-visible {
 .sidebar-footer > span:last-child {
   color: var(--lavender);
   font-size: 0.65rem;
+}
+
+/* Formulaire de création d’une base */
+
+.create-database {
+  display: grid;
+  gap: 12px;
+  margin: 0 14px 28px;
+}
+
+.create-database label {
+  color: var(--champagne);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.create-database input {
+  width: 100%;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--champagne);
+  border-radius: 8px;
+  background: var(--cream);
+  color: var(--prune);
+  font-size: 0.8rem;
+}
+
+.create-database input::placeholder {
+  color: var(--muted);
+}
+
+.create-database input:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.create-database button {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.create-database button:hover {
+  background: var(--cream);
+  color: var(--prune);
 }
 
 /* Zone de travail */
@@ -346,7 +405,7 @@ button:focus-visible {
   gap: 16px;
   padding: 13px 24px;
   border-bottom: 1px solid var(--champagne);
-  transition: background 0.2s;
+  transition: background-color 0.2s;
 }
 
 .table-row:last-child {
