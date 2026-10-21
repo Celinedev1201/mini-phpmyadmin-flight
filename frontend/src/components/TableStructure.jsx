@@ -1,10 +1,13 @@
 import AddColumn from "./AddColumn";
+import InsertRow from "./InsertRow";
+import TableRows from "./TableRows";
 
 import { useEffect, useState } from "react";
 
 function TableStructure({ database, table }) {
   const [columns, setColumns] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [rowsVersion, setRowsVersion] = useState(0);
 
   useEffect(() => {
     async function loadColumns() {
@@ -72,6 +75,20 @@ function TableStructure({ database, table }) {
           </tbody>
         </table>
       </div>
+      <InsertRow
+        key={`insert-${database}.${table}`}
+        database={database}
+        table={table}
+        columns={columns}
+        onCreated={() => setRowsVersion((value) => value + 1)}
+      />
+
+      <TableRows
+        key={`rows-${database}.${table}`}
+        database={database}
+        table={table}
+        refreshKey={rowsVersion}
+      />
     </section>
   );
 }

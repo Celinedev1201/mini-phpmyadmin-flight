@@ -467,6 +467,77 @@ button:focus-visible {
   }
 }
 
+/*ajouter ligne*/
+
+.insert-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 24px;
+  border-top: 1px solid var(--champagne);
+}
+
+.insert-row h3 {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--prune);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.insert-row > div {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.insert-row label {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.insert-row input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--champagne);
+  border-radius: 8px;
+  background: var(--ivory);
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+.insert-row input:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+}
+
+.insert-row button {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 8px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.insert-row button:hover {
+  background: var(--champagne);
+}
+
+@media (max-width: 700px) {
+  .insert-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* Zone de travail */
 
 .main-content {
