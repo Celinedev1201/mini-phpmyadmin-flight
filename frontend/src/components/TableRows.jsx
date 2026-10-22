@@ -1,84 +1,94 @@
 import { useEffect, useState } from "react";
+import { request, tablePath } from "../services/api";
+import Feedback from "./Feedback";
+import DeleteButton from "./DeleteButton";
+import RowForm from "./RowForm";
 
-function TableRows({ database, table, refreshKey }) {
+function TableRows({ database, table, columns, refreshKey }) {
   const [rows, setRows] = useState([]);
+  const [primaryKey, setPrimaryKey] = useState([]);
+  const [reason, setReason] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [editing, setEditing] = useState(null);
+  const [version, setVersion] = useState(0);
+  const path = `${tablePath(database, table)}/rows`;
 
   useEffect(() => {
     let active = true;
-
     async function loadRows() {
+      setLoading(true);
+      setError("");
       try {
-        const response = await fetch(
-          `/api/databases/${encodeURIComponent(database)}/tables/${encodeURIComponent(table)}/rows`
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || `Erreur HTTP ${response.status}`);
-        }
-
+        const data = await request(path);
         if (active) {
-          setRows(data.rows);
+          // La clé React sert à l’affichage seulement ; la clé SQL reste séparée.
+          setRows(data.rows.map((row) => ({ row, renderKey: crypto.randomUUID() })));
+          setPrimaryKey(data.primaryKey);
+          setReason(data.actionDisabledReason);
         }
       } catch (error) {
-        console.error("Chargement des lignes impossible :", error);
+        if (active) setError(error.message);
+      } finally {
+        if (active) setLoading(false);
       }
-      
     }
-
-    setRows([]);
     loadRows();
+    return () => { active = false; };
+  }, [path, refreshKey, version]);
 
+  function reloadRows() {
+    setEditing(null);
+    setLoading(true);
+    setVersion((previous) => previous + 1);
+  }
 
-    const columnNames = rows.length > 0 ? Object.keys(rows[0]) : [];
+  function rowChanged(data) {
+    setSuccess(data.message);
+    reloadRows();
+  }
 
-    return () => {
-      active = false;
-    };
-  }, [database, table, refreshKey]);
-  
-  const columnNames = rows.length > 0 ? Object.keys(rows[0]) : [];
-
-
-
+  const columnNames = rows.length > 0 ? Object.keys(rows[0].row) : [];
+  const disabled = loading || Boolean(error) || Boolean(reason) || Boolean(editing);
   return (
     <section className="table-panel">
       <div className="panel-heading">
-        <span>Données de {table}</span>
-        <span>{rows.length} lignes affichées · maximum 50</span>
+        <span>Données de {table}</span><span>{rows.length} lignes affichées · maximum 50</span>
       </div>
-
-      {rows.length > 0 ? (
-  <div className="structure-scroll">
-    <table className="structure-table">
-      <thead>
-        <tr>
-          {columnNames.map((column) => (
-            <th key={column} scope="col">
-              {column}
-            </th>
-          ))}
-        </tr>
-      </thead>
-
-      <tbody>
-        {rows.map((row, index) => (
-          <tr key={index}>
-            {columnNames.map((column) => (
-              <td key={column}>
-                {row[column] === null ? <em>NULL</em> : String(row[column])}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-) : (
-  <p className="empty-message">Aucune ligne à afficher.</p>
-)}
-
+      <Feedback loading={loading} error={error} success={success} />
+      <button className="action-button" disabled={loading} onClick={reloadRows}>Actualiser les lignes</button>
+      {reason && <p className="empty-message">{reason}</p>}
+      {editing && <RowForm key={editing.renderKey} database={database} table={table}
+        row={editing.row} rowKey={editing.rowKey} columns={columns}
+        onSaved={rowChanged} onCancel={() => setEditing(null)} />}
+      {rows.length > 0 && <div className="structure-scroll">
+        <table className="structure-table">
+          <thead>
+            <tr>{columnNames.map((column) => <th key={column}>{column}</th>)}<th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {rows.map(({ row, renderKey }) => {
+              const rowKey = {};
+              for (const name of primaryKey) rowKey[name] = row[name];
+              return (
+                <tr key={renderKey}>
+                  {columnNames.map((column) => (
+                    <td key={column}>{row[column] === null ? <em>NULL</em> : String(row[column])}</td>
+                  ))}
+                  <td>
+                    <button className="action-button" disabled={disabled}
+                      onClick={() => setEditing({ row, rowKey, renderKey })}>Modifier</button>
+                    <DeleteButton path={path} target={`la ligne de clé ${JSON.stringify(rowKey)}`}
+                      body={{ key: rowKey }} onDeleted={rowChanged} disabled={disabled} />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>}
+      {!loading && !error && rows.length === 0 && <p className="empty-message">Aucune ligne à afficher.</p>}
     </section>
   );
 }

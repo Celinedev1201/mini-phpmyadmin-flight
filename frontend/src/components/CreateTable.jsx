@@ -1,51 +1,39 @@
 import { useState } from "react";
+import { request, databasePath } from "../services/api";
+import Feedback from "./Feedback";
 
 function CreateTable({ database, onCreated }) {
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   async function handleSubmit(event) {
     event.preventDefault();
-
+    if (loading) return;
+    setLoading(true);
+    setError("");
+    setSuccess("");
     try {
-      const response = await fetch(
-        `/api/databases/${encodeURIComponent(database)}/tables`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name }),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      console.log("Réponse de PHP :", data);
+      const data = await request(`${databasePath(database)}/tables`, { method: "POST", body: { name } });
       setName("");
-      onCreated?.();
+      setSuccess(data.message);
+      onCreated();
     } catch (error) {
-      console.error("Envoi impossible :", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <form className="create-table" onSubmit={handleSubmit}>
       <label htmlFor="table-name">Nouvelle table</label>
-
-      <input
-        id="table-name"
-        type="text"
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-        placeholder="Ex. : produits"
-        required
-      />
-
-      <button type="submit">Créer la table</button>
+      <input id="table-name" value={name} onChange={(event) => setName(event.target.value)}
+        placeholder="Ex. : produits" required maxLength={64}
+        pattern="[a-zA-Z][a-zA-Z0-9_]{0,63}" disabled={loading} />
+      <button disabled={loading}>Créer la table</button>
+      <Feedback loading={loading} error={error} success={success} />
     </form>
   );
 }

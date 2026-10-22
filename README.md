@@ -1,16 +1,8 @@
 # Mini phpMyAdmin — FlightPHP & React
 
-Projet pédagogique d’interface de gestion de bases MySQL.
-
-L’application affiche actuellement la liste des bases disponibles.
-Elle utilise une API FlightPHP et une interface React.
-
-## Technologies
-
-- PHP 8.3 et FlightPHP
-- React et Vite
-- MySQL 8.4
-- Docker et Docker Compose
+Projet pédagogique de Théoa : gérer des bases personnelles MySQL depuis React.
+Stack : React/Vite, PHP 8.3/FlightPHP/PDO, MySQL 8.4 et Docker Compose.
+Le design conserve les couleurs ivoire, prune, mauve et doré.
 
 ## Prérequis
 
@@ -92,7 +84,7 @@ dans le dossier contenant `docker-compose.yaml`.
 Créer un fichier `.env` à la racine :
 
 ```dotenv
-MYSQL_ROOT_PASSWORD=MiniDev2026Local
+MYSQL_ROOT_PASSWORD=choisir_un_mot_de_passe_local
 DB_HOST=mysql
 DB_PORT=3306
 DB_USER=root
@@ -172,7 +164,7 @@ Résultat attendu :
 
 L’interface doit afficher le nombre de bases et leurs noms.
 
-Sur une installation MySQL neuve, les quatre bases système sont :
+Les quatre bases système suivantes sont masquées et protégées par l’application :
 
 - information_schema
 - mysql
@@ -303,13 +295,103 @@ docker compose logs backend
 
 Remplacer `backend` par `frontend` ou `mysql` selon le service concerné.
 
-## Limites actuelles
+## Fonctions disponibles
 
-Cette configuration sert au développement local.
+- Lister les bases personnelles, créer une base et afficher ses tables et vues.
+- Supprimer une base après confirmation et saisie exacte de son nom.
+- Créer, renommer et supprimer une table avec confirmation de suppression.
+- Consulter la structure, ajouter, renommer et supprimer une colonne.
+- Changer un type vers VARCHAR(255), TEXT, INT, DECIMAL(10,2) ou DATE.
+- Insérer et afficher les 50 premières lignes, distinguer NULL d’un texte vide.
+- Modifier les valeurs d’une ligne, y compris sa clé, et supprimer avec confirmation.
+- Afficher les chargements, réussites et erreurs ; bloquer les doubles soumissions.
+- Actualiser après chaque réussite ; conserver la sélection renommée et retirer celle supprimée.
 
-Le frontend utilise le serveur de développement Vite et le backend
-le serveur de développement PHP.
+## Règles et limites
 
-Le proxy Vite configuré dans `server.proxy` ne fait pas partie des
-fichiers compilés. Un déploiement en production nécessitera une
-configuration adaptée pour servir le frontend et joindre l’API.
+Les noms suivent la convention existante : commencer par une lettre ASCII,
+puis lettres, chiffres ou underscores, au maximum 64 caractères.
+Les bases système sont masquées et protégées sur le serveur, même par appel direct.
+Les valeurs des lignes et les recherches de métadonnées utilisent des paramètres PDO.
+
+Une modification/suppression de ligne exige la vraie clé primaire complète,
+simple ou composite, vérifiée côté serveur. Aucun numéro de position n’est utilisé.
+Les valeurs BIGINT/DECIMAL voyagent en chaînes pour préserver leur précision.
+Sans clé exploitable, les boutons sont désactivés avec une explication.
+Les clés binaires, flottantes, invisibles ou aux noms non pris en charge sont refusées.
+Les mutations de lignes nécessitent InnoDB pour le verrou et la transaction.
+Les vues restent consultables uniquement. Il n’y a pas encore de pagination.
+
+Un renommage seul conserve la définition de colonne avec RENAME COLUMN.
+Un changement de type conserve NULL, défaut simple, commentaire, auto-incrément
+compatible, UNSIGNED numérique et collation textuelle compatible.
+Les types et attributs complexes sont refusés pour éviter de perdre leur définition.
+Le mode SQL strict refuse les conversions invalides ; une conversion valide peut
+transformer les valeurs. Les contraintes MySQL restent actives, sans suppression forcée.
+Les ALTER/DROP sont irréversibles dans l’interface et peuvent verrouiller les tables.
+Les références SQL dans les vues, routines ou applications peuvent nécessiter une adaptation.
+
+MySQL ne possède pas de commande RENAME DATABASE : cette fonction n’est pas proposée.
+Une migration fiable demanderait un inventaire des tables, vues, index, contraintes,
+triggers, routines, événements, droits, encodages et références au schéma source ;
+une sauvegarde vérifiée, une stratégie de cohérence pendant les écritures,
+une recréation contrôlée des objets et droits, une copie vérifiée des données,
+des tests de dépendances et un plan de bascule et de retour arrière.
+Aucune copie suivie d’une suppression n’est improvisée ici.
+Voir les références MySQL : [ALTER TABLE](https://dev.mysql.com/doc/refman/8.4/en/alter-table.html)
+et [RENAME TABLE](https://dev.mysql.com/doc/refman/8.4/en/rename-table.html).
+
+## Où retrouver le code ?
+
+Pour une explication simple des fichiers et un exemple d’action, lire le
+[mémo d’organisation](MEMO_ORGANISATION.md).
+
+Le code utilise directement les `useState`, `useEffect` et fonctions asynchrones
+habituels de React, comme dans la première version du projet. Aucun hook personnalisé.
+
+| Ce que je veux modifier | Fichier dans `frontend/src/` |
+| --- | --- |
+| Le menu des bases et la page d’accueil | `App.jsx` |
+| La liste des tables et la table sélectionnée | `components/DatabaseExplorer.jsx` |
+| La structure et la liste des colonnes | `components/TableStructure.jsx` |
+| Le formulaire de création d’une base ou table | `components/CreateDatabase.jsx`, `CreateTable.jsx` |
+| Ajouter ou modifier une colonne | `components/AddColumn.jsx`, `ColumnActions.jsx` |
+| Renommer ou supprimer une table | `components/TableActions.jsx` |
+| Afficher les lignes et leurs boutons | `components/TableRows.jsx` |
+| Ajouter ou modifier les valeurs d’une ligne | `components/RowForm.jsx` |
+| Les confirmations de suppression (question et saisie du nom) | `components/DeleteButton.jsx` |
+| Les messages et les appels au PHP | `components/Feedback.jsx`, `services/api.js` |
+
+Tous les styles sont réunis dans `frontend/src/index.css`, avec les couleurs et classes existantes.
+Les fichiers de code React et PHP restent sous 150 lignes ; le CSS et ce README font exception.
+
+Côté PHP, ouvrir d’abord la route de la fonction dans `backend/src/routes/`.
+Elle appelle le service du même nom dans `backend/src/` : `databases.php` appelle
+`DatabaseService.php`, puis même principe pour tables, colonnes et lignes.
+Le SQL de modification et suppression des lignes est réuni dans `RowService.php`.
+`SchemaService.php` décrit les colonnes et la clé primaire de la table.
+`SqlValidation.php` vérifie les noms, les types et les valeurs reçus.
+`Api.php` contient le traitement commun des réponses et erreurs HTTP.
+`Database.php` contient la connexion PDO.
+
+Exemple : le bouton « Modifier » d’une ligne est dans `TableRows.jsx`.
+Il ouvre `RowForm.jsx`. Le formulaire envoie les valeurs par `services/api.js`.
+La demande arrive dans `routes/rows.php`, qui appelle `RowService::update()`.
+Après la réussite, `TableRows.jsx` recharge les lignes.
+
+## Vérifications
+
+```bash
+docker compose exec -T backend sh -c 'find src public -name "*.php" -exec php -l {} \;'
+docker compose exec -T frontend npm run build
+```
+
+Pour vérifier les opérations, utiliser uniquement une base de test dédiée.
+Vérifier la modification et la suppression des lignes, colonnes, tables et bases,
+les confirmations, les messages et l’actualisation des listes.
+Vérifier aussi le refus des bases système et des actions sans clé primaire exploitable.
+Ne jamais utiliser les données existantes pour ces essais.
+
+Usage local pédagogique, sans authentification : ne pas exposer ces serveurs sur Internet.
+La production demanderait authentification, contrôle des droits et configuration du proxy.
+SafeBase, dump, export/import, restauration, cron, sauvegardes et PostgreSQL sont hors périmètre.

@@ -1,49 +1,39 @@
 import { useState } from "react";
+import { request } from "../services/api";
+import Feedback from "./Feedback";
 
 function CreateDatabase({ onCreated }) {
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log("Formulaire envoyé :", name);
-
+    if (loading) return;
+    setLoading(true);
+    setError("");
+    setSuccess("");
     try {
-      const response = await fetch("/api/databases", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      console.log("Réponse de PHP :", data);
+      const data = await request("/api/databases", { method: "POST", body: { name } });
       setName("");
-      onCreated?.();
+      setSuccess(data.message);
+      onCreated();
     } catch (error) {
-      console.error("Envoi impossible :", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <form className="create-database" onSubmit={handleSubmit}>
       <label htmlFor="database-name">Nouvelle base</label>
-
-      <input
-        id="database-name"
-        type="text"
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-        placeholder="Ex. : atelier_theoa"
-        required
-      />
-
-      <button type="submit">Créer la base</button>
+      <input id="database-name" value={name} onChange={(event) => setName(event.target.value)}
+        placeholder="Ex. : atelier_theoa" required maxLength={64}
+        pattern="[a-zA-Z][a-zA-Z0-9_]{0,63}" disabled={loading} />
+      <button disabled={loading}>Créer la base</button>
+      <Feedback loading={loading} error={error} success={success} />
     </form>
   );
 }

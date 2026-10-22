@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap");
 
+/* 1. Palette Théoa, polices et règles communes à toute la page */
+
 :root {
   --ivory: #f8f3ea;
   --cream: #fbf8f2;
@@ -54,13 +56,58 @@ button:focus-visible {
   color: var(--prune);
 }
 
+/* 2. Disposition générale : menu à gauche, contenu à droite */
+
 .workspace {
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);
   min-height: 100vh;
 }
 
-/* Navigation */
+/* 3. Accueil avant sélection d’une base et pied de page */
+
+.welcome {
+  display: grid;
+  justify-items: center;
+  padding: 56px 20px;
+  border-top: 1px solid var(--champagne);
+  text-align: center;
+}
+
+.welcome-symbol {
+  color: var(--violet);
+  font-size: 3.5rem;
+}
+
+.welcome p {
+  margin: 20px 0;
+  color: var(--prune);
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 3vw, 3rem);
+  line-height: 1.15;
+}
+
+.welcome em {
+  color: var(--violet);
+}
+
+.welcome > span:last-child {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.main-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0;
+  border-top: 1px solid var(--champagne);
+  color: var(--muted);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+}
+
+/* 4. Menu de gauche : identité Théoa, liste des bases et pied du menu */
 
 .sidebar {
   position: sticky;
@@ -212,333 +259,7 @@ button:focus-visible {
   font-size: 0.65rem;
 }
 
-/* Formulaire de création d’une base */
-
-.create-database {
-  display: grid;
-  gap: 12px;
-  margin: 0 14px 28px;
-}
-
-.create-database label {
-  color: var(--champagne);
-  font-size: 0.65rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.create-database input {
-  width: 100%;
-  min-width: 0;
-  padding: 5px 8px;
-  border: 1px solid var(--champagne);
-  border-radius: 8px;
-  background: var(--cream);
-  color: var(--prune);
-  font-size: 0.8rem;
-}
-
-.create-database input::placeholder {
-  color: var(--muted);
-}
-
-.create-database input:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 3px;
-}
-
-.create-database button {
-  width: 100%;
-  min-height: 44px;
-  padding: 11px 16px;
-  border: 1px solid var(--gold);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--cream);
-  font: inherit;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background-color 0.2s,
-    color 0.2s;
-}
-
-.create-database button:hover {
-  background: var(--cream);
-  color: var(--prune);
-}
-
-/*Table bdd*/
-
-.create-table {
-  display: flex;
-  align-items: end;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 24px;
-  border-bottom: 1px solid var(--champagne);
-}
-
-.create-table label {
-  flex-basis: 100%;
-  color: var(--muted);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.create-table input {
-  flex: 1;
-  min-width: 0;
-  padding: 8px 12px;
-  border: 1px solid var(--champagne);
-  border-radius: 8px;
-  background: var(--ivory);
-  color: var(--prune);
-  font: inherit;
-  font-size: 0.8rem;
-}
-
-.create-table input:focus-visible {
-  outline: 2px solid var(--violet);
-  outline-offset: 3px;
-}
-
-.create-table button {
-  padding: 8px 16px;
-  border: 1px solid var(--gold);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--prune);
-  font: inherit;
-  font-size: 0.8rem;
-  cursor: pointer;
-}
-
-.create-table button:hover {
-  background: var(--champagne);
-}
-
-/*selectionner table*/
-
-.table-select {
-  padding: 4px 0;
-  border: 0;
-  background: transparent;
-  color: var(--prune);
-  font: inherit;
-  font-size: 0.8rem;
-  text-align: left;
-  cursor: pointer;
-}
-
-.table-select:hover {
-  color: var(--violet);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-/*structure table*/
-.structure-scroll {
-  overflow-x: auto;
-}
-
-.structure-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 0.8rem;
-}
-
-.structure-table th {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--champagne);
-  color: var(--muted);
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.structure-table td {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--champagne);
-  color: var(--prune);
-}
-
-.structure-table tbody tr:last-child td {
-  border-bottom: 0;
-}
-
-.structure-table tbody tr:hover {
-  background: rgb(201 167 216 / 10%);
-}
-
-/*ajouter colonne*/
-
-.add-column {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
-  gap: 10px 16px;
-  align-items: end;
-  padding: 24px;
-  border-bottom: 1px solid var(--champagne);
-}
-
-.add-column label {
-  color: var(--muted);
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.add-column label[for="column-name"] {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-.add-column label[for="column-type"] {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.add-column input,
-.add-column select {
-  width: 100%;
-  min-width: 0;
-  padding: 8px 12px;
-  border: 1px solid var(--champagne);
-  border-radius: 8px;
-  background: var(--ivory);
-  color: var(--prune);
-  font: inherit;
-  font-size: 0.8rem;
-}
-
-.add-column input {
-  grid-column: 1;
-  grid-row: 2;
-}
-
-.add-column select {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-.add-column button {
-  grid-column: 3;
-  grid-row: 2;
-  padding: 8px 16px;
-  border: 1px solid var(--gold);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--prune);
-  font: inherit;
-  font-size: 0.8rem;
-  cursor: pointer;
-}
-
-.add-column button:hover {
-  background: var(--champagne);
-}
-
-.add-column input:focus-visible,
-.add-column select:focus-visible {
-  outline: 2px solid var(--violet);
-  outline-offset: 3px;
-}
-
-@media (max-width: 700px) {
-  .add-column {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .add-column > label,
-  .add-column > input,
-  .add-column > select,
-  .add-column > button {
-    grid-column: auto;
-    grid-row: auto;
-  }
-}
-
-/*ajouter ligne*/
-
-.insert-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  padding: 24px;
-  border-top: 1px solid var(--champagne);
-}
-
-.insert-row h3 {
-  grid-column: 1 / -1;
-  margin: 0;
-  color: var(--prune);
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.6rem;
-  font-weight: 600;
-}
-
-.insert-row > div {
-  display: grid;
-  gap: 8px;
-  min-width: 0;
-}
-
-.insert-row label {
-  color: var(--muted);
-  font-size: 0.7rem;
-  font-weight: 600;
-}
-
-.insert-row input {
-  width: 100%;
-  min-width: 0;
-  padding: 8px 12px;
-  border: 1px solid var(--champagne);
-  border-radius: 8px;
-  background: var(--ivory);
-  color: var(--prune);
-  font: inherit;
-  font-size: 0.8rem;
-}
-
-.insert-row input:focus-visible {
-  outline: 2px solid var(--violet);
-  outline-offset: 3px;
-}
-
-.insert-row button {
-  grid-column: 1 / -1;
-  justify-self: start;
-  padding: 8px 16px;
-  border: 1px solid var(--gold);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--prune);
-  font: inherit;
-  font-size: 0.8rem;
-  cursor: pointer;
-}
-
-.insert-row button:hover {
-  background: var(--champagne);
-}
-
-@media (max-width: 700px) {
-  .insert-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-/* Zone de travail */
+/* 5. Zone principale : barre du haut, titre de la base et compteur des tables */
 
 .main-content {
   display: flex;
@@ -636,7 +357,7 @@ button:focus-visible {
   font-size: 0.65rem;
 }
 
-/* Liste des tables */
+/* 6. Panneaux et liste des tables de la base sélectionnée */
 
 .table-panel {
   overflow: hidden;
@@ -708,50 +429,324 @@ button:focus-visible {
   font-size: 0.9rem;
 }
 
-/* Écran avant sélection */
-
-.welcome {
-  display: grid;
-  justify-items: center;
-  padding: 56px 20px;
-  border-top: 1px solid var(--champagne);
-  text-align: center;
+/* 7. Tableaux de structure et de données : en-têtes, cellules et défilement horizontal */
+.structure-scroll {
+  overflow-x: auto;
 }
 
-.welcome-symbol {
-  color: var(--violet);
-  font-size: 3.5rem;
-}
-
-.welcome p {
-  margin: 20px 0;
-  color: var(--prune);
-  font-family: "Cormorant Garamond", serif;
-  font-size: clamp(2rem, 3vw, 3rem);
-  line-height: 1.15;
-}
-
-.welcome em {
-  color: var(--violet);
-}
-
-.welcome > span:last-child {
-  color: var(--muted);
+.structure-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
   font-size: 0.8rem;
 }
 
-.main-footer {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 22px 0;
-  border-top: 1px solid var(--champagne);
+.structure-table th {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--champagne);
   color: var(--muted);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-/* Adaptation aux petits écrans */
+.structure-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--champagne);
+  color: var(--prune);
+}
+
+.structure-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.structure-table tbody tr:hover {
+  background: rgb(201 167 216 / 10%);
+}
+
+/* Le nom de chaque table est un bouton pour ouvrir sa structure. */
+
+.table-select {
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.table-select:hover {
+  color: var(--violet);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* 8. Formulaire de création d’une base, placé dans le menu sombre */
+
+.create-database {
+  display: grid;
+  gap: 12px;
+  margin: 0 14px 28px;
+}
+
+.create-database label {
+  color: var(--champagne);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.create-database input {
+  width: 100%;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--champagne);
+  border-radius: 8px;
+  background: var(--cream);
+  color: var(--prune);
+  font-size: 0.8rem;
+}
+
+.create-database input::placeholder {
+  color: var(--muted);
+}
+
+.create-database input:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.create-database button {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.create-database button:hover {
+  background: var(--cream);
+  color: var(--prune);
+}
+
+/* 9. Formulaires de création et de renommage d’une table */
+
+.create-table {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 24px;
+  border-bottom: 1px solid var(--champagne);
+}
+
+.create-table label {
+  flex-basis: 100%;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.create-table input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--champagne);
+  border-radius: 8px;
+  background: var(--ivory);
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+.create-table input:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+}
+
+.create-table button {
+  padding: 8px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.create-table button:hover {
+  background: var(--champagne);
+}
+
+/* 10. Ajout d’une colonne : nom, type et bouton sur la même ligne */
+
+.add-column {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 10px 16px;
+  align-items: end;
+  padding: 24px;
+  border-bottom: 1px solid var(--champagne);
+}
+
+.add-column label {
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.add-column label[for="column-name"] {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.add-column label[for="column-type"] {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+/* Les champs des colonnes et des lignes partagent la même apparence. */
+.add-column input,
+.add-column select,
+.insert-row input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--champagne);
+  border-radius: 8px;
+  background: var(--ivory);
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+.add-column input {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.add-column select {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.add-column button {
+  grid-column: 3;
+  grid-row: 2;
+  padding: 8px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.add-column button:hover {
+  background: var(--champagne);
+}
+
+.add-column input:focus-visible,
+.add-column select:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  .add-column {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .add-column > label,
+  .add-column > input,
+  .add-column > select,
+  .add-column > button {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
+/* 11. Formulaire commun pour ajouter ou modifier les valeurs d’une ligne */
+
+.insert-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 24px;
+  border-top: 1px solid var(--champagne);
+}
+
+.insert-row h3 {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--prune);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.insert-row > div {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.insert-row label {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+
+.insert-row input:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+}
+
+.insert-row button {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 8px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.insert-row button:hover {
+  background: var(--champagne);
+}
+
+@media (max-width: 700px) {
+  .insert-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* 12. Adaptation tablette et téléphone : espacements réduits et menu au-dessus du contenu */
 
 @media (max-width: 1000px) {
   .workspace {
@@ -834,10 +829,113 @@ button:focus-visible {
   }
 }
 
+/* Respecte le réglage du navigateur qui demande de réduire les animations. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     transition: none !important;
   }
+}
+
+/* 13. Boutons de modification et de suppression, avec les contours dorés Théoa */
+.action-button,
+.edit-column button {
+  padding: 8px 12px;
+  margin: 4px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.action-button:hover,
+.edit-column button:hover {
+  background: var(--champagne);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+/* 14. Messages affichés pendant le chargement, après une réussite ou en cas d’erreur */
+
+.feedback {
+  grid-column: 1 / -1;
+  flex-basis: 100%;
+  margin: 8px 14px;
+  overflow-wrap: anywhere;
+  font-size: 0.8rem;
+}
+
+.feedback-error {
+  color: var(--violet);
+  font-weight: 600;
+}
+
+.feedback-success {
+  color: var(--violet);
+}
+
+.sidebar .feedback {
+  color: var(--champagne);
+}
+
+.resource-actions {
+  margin-bottom: 20px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* 15. Petit formulaire de modification d’une colonne dans le tableau de structure */
+
+.edit-column {
+  display: grid;
+  gap: 8px;
+  min-width: 200px;
+}
+
+.edit-column input,
+.edit-column select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--champagne);
+  border-radius: 8px;
+  color: var(--prune);
+  background: var(--ivory);
+  font: inherit;
+}
+
+.insert-row .null-choice input {
+  width: auto;
+}
+
+.row-identity {
+  grid-column: 1 / -1;
+  overflow-wrap: anywhere;
+}
+
+/* 16. Confirmation de suppression et saisie du nom pour supprimer une base */
+.delete-confirmation {
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  background: var(--cream);
+}
+
+.delete-confirmation input {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid var(--champagne);
+  border-radius: 8px;
+  background: var(--ivory);
+  color: var(--prune);
+  font: inherit;
 }
