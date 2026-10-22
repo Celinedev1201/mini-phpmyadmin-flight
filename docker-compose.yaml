@@ -47,6 +47,7 @@ services:
     # Synchronise le code PHP avec le conteneur
     volumes:
       - ./backend:/var/www/html
+      - ./backups:/var/backups/safebase
 
     # Attend que MySQL soit disponible
     depends_on:

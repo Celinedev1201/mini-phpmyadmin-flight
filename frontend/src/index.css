@@ -749,6 +749,14 @@ button:focus-visible {
   }
 }
 
+/* sauvegarde de la base */
+.backup-actions {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
 /* 12. Adaptation tablette et téléphone : espacements réduits et menu au-dessus du contenu */
 
 @media (max-width: 1000px) {
