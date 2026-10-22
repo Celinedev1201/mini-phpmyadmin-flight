@@ -27,7 +27,8 @@
 
 body {
   margin: 0;
-  min-width: 320px;
+  /* Évite un débordement horizontal sur les écrans les plus étroits. */
+  min-width: 0;
 }
 
 button,
@@ -707,6 +708,8 @@ button:focus-visible {
 
 .insert-row > div {
   display: grid;
+  /* Les champs restent alignés même quand certains n’ont pas de case NULL. */
+  align-content: start;
   gap: 8px;
   min-width: 0;
 }
