@@ -33,4 +33,25 @@ final class BackupCatalog
 
         return ['backups' => $backups];
     }
+
+    // Vérifie le nom du fichier et retrouve la sauvegarde demandée.
+public static function downloadPath(string $database, string $filename): string
+{
+    SqlValidation::database($database);
+
+    $validFilename = '/^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}_[a-f0-9]{8}\.sql$/D';
+
+    if (!preg_match($validFilename, $filename)) {
+        throw new HttpError('Nom de sauvegarde invalide.', 400);
+    }
+
+    $path = self::ROOT . '/' . $database . '/' . $filename;
+
+    if (!is_file($path) || is_link($path) || !is_readable($path)) {
+        throw new HttpError('Sauvegarde introuvable ou inaccessible.', 404);
+    }
+
+    return $path;
+}
+
 }

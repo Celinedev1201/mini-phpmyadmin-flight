@@ -15,3 +15,25 @@ Flight::route(
         Api::run(fn () => BackupCatalog::list($database));
     }
 );
+
+// Envoie la sauvegarde au navigateur sous forme de fichier SQL.
+Flight::route(
+    'GET /api/databases/@database/backups/@filename/download',
+    function (string $database, string $filename): void {
+        Api::run(function () use ($database, $filename) {
+            // Remet l’extension du fichier, retirée de l’URL de téléchargement.
+            $filename .= '.sql';
+            $path = BackupCatalog::downloadPath($database, $filename);
+
+
+            header('Content-Type: application/sql');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Content-Length: ' . filesize($path));
+            header('Cache-Control: no-store');
+            header('X-Content-Type-Options: nosniff');
+
+            readfile($path);
+            exit;
+        });
+    }
+);

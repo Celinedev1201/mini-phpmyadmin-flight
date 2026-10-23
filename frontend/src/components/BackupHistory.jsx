@@ -16,10 +16,9 @@ function BackupHistory({ database, refreshKey }) {
       setBackups([]);
 
       try {
-        const data = await request(
-          `${databasePath(database)}/backups`,
-          { signal: controller.signal },
-        );
+        const data = await request(`${databasePath(database)}/backups`, {
+          signal: controller.signal,
+        });
 
         if (!controller.signal.aborted) {
           setBackups(data.backups);
@@ -62,6 +61,7 @@ function BackupHistory({ database, refreshKey }) {
                 <th scope="col">Fichier</th>
                 <th scope="col">Date</th>
                 <th scope="col">Taille</th>
+                <th scope="col">Action</th>
               </tr>
             </thead>
 
@@ -69,10 +69,16 @@ function BackupHistory({ database, refreshKey }) {
               {backups.map((backup) => (
                 <tr key={backup.filename}>
                   <td>{backup.filename}</td>
-                  <td>
-                    {new Date(backup.createdAt).toLocaleString("fr-FR")}
-                  </td>
+                  <td>{new Date(backup.createdAt).toLocaleString("fr-FR")}</td>
                   <td>{(backup.size / 1024).toFixed(1)} Ko</td>
+                  <td>
+                    <a
+                      className="action-button"
+                      href={`${databasePath(database)}/backups/${encodeURIComponent(backup.filename.slice(0, -4))}/download`}
+                    >
+                      Télécharger
+                    </a>
+                  </td>
                 </tr>
               ))}
             </tbody>
