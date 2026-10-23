@@ -10,22 +10,32 @@ require dirname(__DIR__) . '/src/Api.php';
 require dirname(__DIR__) . '/src/SqlValidation.php';
 require dirname(__DIR__) . '/src/BackupService.php';
 
+require dirname(__DIR__) . '/src/PostgresValidation.php';
+require dirname(__DIR__) . '/src/PostgresBackupService.php';
+
 $database = $argv[1] ?? '';
+$engine = $argv[2] ?? 'mysql';
 
 if ($database === '') {
-    fwrite(STDERR, "Usage : php bin/backup.php nom_de_la_base\n");
+    fwrite(STDERR, "Usage : php bin/backup.php nom_de_la_base [mysql|postgres]\n");
     exit(1);
 }
 
 try {
-    $backup = BackupService::create($database);
+    if (!in_array($engine, ['mysql', 'postgres'], true)) {
+        throw new InvalidArgumentException('Moteur inconnu.');
+    }
+    $backup = $engine === 'postgres'
+        ? PostgresBackupService::create($database)
+        : BackupService::create($database);
 
     // La date et le résultat serviront à suivre les sauvegardes automatiques.
     fwrite(
         STDOUT,
         sprintf(
-            "[%s] Sauvegarde réussie : %s / %s\n",
+            "[%s] Sauvegarde réussie [%s] : %s / %s\n",
             gmdate('c'),
+            $engine,
             $database,
             $backup['filename']
         )
@@ -34,8 +44,9 @@ try {
     fwrite(
         STDERR,
         sprintf(
-            "[%s] Échec pour %s : %s\n",
+            "[%s] Échec [%s] pour %s : %s\n",
             gmdate('c'),
+            $engine,
             $database,
             $exception->getMessage()
         )

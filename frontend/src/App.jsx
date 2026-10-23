@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import CreateDatabase from "./components/CreateDatabase";
 import DatabaseExplorer from "./components/DatabaseExplorer";
+import PostgresBackups from "./components/PostgresBackups";
 import Feedback from "./components/Feedback";
 import { request } from "./services/api";
 
@@ -132,6 +133,7 @@ function App() {
             </>
           )}
         </section>
+        <PostgresBackups />
         <footer className="main-footer">
           <span>MINI PHPMYADMIN</span>
           <span>Une création Théoa</span>

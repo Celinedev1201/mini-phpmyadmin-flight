@@ -28,3 +28,19 @@ Flight::route('GET /api/database/status', function (): void {
         ], 500);
     }
 });
+
+// Vérifie que PHP peut se connecter à PostgreSQL.
+Flight::route(
+    'GET /api/postgres/status',
+    function (): void {
+        Api::run(function () {
+            $pdo = PostgresDatabase::connect();
+
+            return [
+                'status' => 'success',
+                'message' => 'Connexion PostgreSQL réussie',
+                'version' => $pdo->query('SELECT version()')->fetchColumn(),
+            ];
+        });
+    }
+);

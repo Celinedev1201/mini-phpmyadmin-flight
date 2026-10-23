@@ -102,3 +102,15 @@ Sans clé exploitable, les boutons de modification et suppression sont désactiv
 
 Pour vérifier une fonction qui touche aux données, utiliser une base de test dédiée.
 Le renommage d’une base MySQL n’est pas proposé ; cette limite est expliquée dans le README.
+
+## Intégration SafeBase
+
+- `PostgresBackups.jsx` charge les bases, conserve la sélection et recharge après restauration.
+- `PostgresBackupForm.jsx` gère la création du dump et ses messages.
+- `BackupHistory.jsx` et `RestoreBackup.jsx` partagent les écrans via `engine`.
+- `routes/postgres.php` appelle les services `PostgresBackupService`,
+  `PostgresBackupCatalog` et `PostgresRestoreService`.
+- `bin/backup.php base [mysql|postgres]` lance la sauvegarde en CLI (MySQL par défaut).
+- `bin/configure-cron.php` prépare une tâche quotidienne pour les deux moteurs.
+
+Le [guide SafeBase](docs/SAFEBASE.md) décrit les commandes et limites.

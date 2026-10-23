@@ -1,14 +1,14 @@
 # Mini phpMyAdmin — FlightPHP & React
 
-Projet pédagogique de Théoa : gérer des bases personnelles MySQL depuis React.
-Stack : React/Vite, PHP 8.3/FlightPHP/PDO, MySQL 8.4 et Docker Compose.
+Projet pédagogique de Théoa : gérer MySQL et sauvegarder/restaurer MySQL et PostgreSQL depuis React.
+Stack : React/Vite, PHP 8.3/FlightPHP/PDO, MySQL 8.4, PostgreSQL 17 et Docker Compose.
 Le design conserve les couleurs ivoire, prune, mauve et doré.
 
 ## Prérequis
 
 - Git : https://git-scm.com/downloads
 - Docker et Docker Compose
-- Ports disponibles : 5173, 8000 et 3307
+- Ports disponibles : 5173, 8000, 3307 et 5433
 
 ### Installation sous Windows
 
@@ -81,22 +81,14 @@ dans le dossier contenant `docker-compose.yaml`.
 
 ### 2. Créer la configuration locale
 
-Créer un fichier `.env` à la racine :
-
-```dotenv
-MYSQL_ROOT_PASSWORD=choisir_un_mot_de_passe_local
-DB_HOST=mysql
-DB_PORT=3306
-DB_USER=root
-```
-
-Le mot de passe ci-dessus est un exemple pour le développement local.
-
-- `MYSQL_ROOT_PASSWORD` : mot de passe initial du compte root MySQL,
-  également transmis au backend.
-- `DB_HOST` : nom du service MySQL sur le réseau Docker.
-- `DB_PORT` : port interne de MySQL.
-- `DB_USER` : compte utilisé par le backend.
+Copier `.env.exemple` vers `.env` (`Copy-Item .env.exemple .env` dans PowerShell,
+`cp .env.exemple .env` dans Ubuntu), uniquement si `.env` n’existe pas déjà.
+Choisir les mots de passe locaux avant le premier démarrage.
+`POSTGRES_DB`, `POSTGRES_USER` et `POSTGRES_PASSWORD` initialisent PostgreSQL.
+`DB_HOST=mysql`, `DB_PORT=3306` et `DB_USER=root` configurent l’accès MySQL.
+Les paramètres PG_HOST/PG_PORT/PG_DATABASE/PG_USER/PG_PASSWORD sont transmis
+par Compose au backend et au scheduler. Ne jamais publier les secrets.
+Les mots de passe d’un volume déjà initialisé ne changent pas en modifiant `.env`.
 
 Le fichier `.env` est ignoré par Git. Pour le vérifier :
 
@@ -149,7 +141,8 @@ docker compose ps
 
 Résultat attendu :
 
-- MySQL : `Up` et `healthy`
+- MySQL et PostgreSQL : `Up` et `healthy`
+- Scheduler : `Up`
 - Backend : `Up`
 - Frontend : `Up`
 
@@ -363,7 +356,8 @@ habituels de React, comme dans la première version du projet. Aucun hook person
 | Les messages et les appels au PHP | `components/Feedback.jsx`, `services/api.js` |
 
 Tous les styles sont réunis dans `frontend/src/index.css`, avec les couleurs et classes existantes.
-Les fichiers de code React et PHP restent sous 150 lignes ; le CSS et ce README font exception.
+Les fichiers source modifiés pour cette intégration restent sous 100 lignes.
+Les fichiers historiques non modifiés, le CSS et la documentation peuvent dépasser cette limite.
 
 Côté PHP, ouvrir d’abord la route de la fonction dans `backend/src/routes/`.
 Elle appelle le service du même nom dans `backend/src/` : `databases.php` appelle
@@ -394,4 +388,13 @@ Ne jamais utiliser les données existantes pour ces essais.
 
 Usage local pédagogique, sans authentification : ne pas exposer ces serveurs sur Internet.
 La production demanderait authentification, contrôle des droits et configuration du proxy.
-SafeBase, dump, export/import, restauration, cron, sauvegardes et PostgreSQL sont hors périmètre.
+
+## SafeBase : sauvegardes des deux moteurs
+
+Les sauvegardes SQL, l’historique, le téléchargement et la restauration dans une
+nouvelle base sont disponibles pour MySQL et PostgreSQL. Une base existante est
+refusée. Les fichiers restent dans `backups/mysql` et `backups/postgres`, hors Git.
+Le PostgreSQL de cette intégration ne propose pas de CRUD complet.
+
+Voir [le guide SafeBase](docs/SAFEBASE.md) pour cron, les tests, le diagnostic
+et les exigences du TP restant à couvrir.

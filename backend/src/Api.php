@@ -32,6 +32,12 @@ final class Api
         } catch (HttpError $exception) {
             Flight::json(['message' => $exception->getMessage()], $exception->status);
         } catch (PDOException $exception) {
+            $sqlState = (string) $exception->getCode();
+            if (str_starts_with($sqlState, '08') || $sqlState === '28P01') {
+                error_log('Connexion SQL indisponible : SQLSTATE ' . $sqlState);
+                Flight::json(['message' => 'Connexion à la base indisponible. Vérifiez le serveur et sa configuration.'], 503);
+                return;
+            }
             $code = (int) ($exception->errorInfo[1] ?? 0);
             $status = 422;
             $message = 'Opération refusée. Vérifiez les valeurs, les types et les contraintes de la table.';
