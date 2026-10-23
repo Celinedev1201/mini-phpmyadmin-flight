@@ -54,6 +54,34 @@ services:
       mysql:
         condition: service_healthy
 
+    # Sauvegardes automatiques MySQL
+  scheduler:
+    build:
+      context: ./backend
+
+    container_name: mini_phpmyadmin_scheduler
+    init: true
+
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      BACKUP_DATABASE: atelier_theoa
+
+    volumes:
+      - ./backend:/var/www/html
+      - ./backups:/var/backups/safebase
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    command:
+      - /bin/sh
+      - -c
+      - php bin/configure-cron.php && exec cron -f
+
   # Interface React
   frontend:
     build:
@@ -67,7 +95,7 @@ services:
 
     ports:
       - "5173:5173"
-    
+
     # Synchronise le code React sans écraser les dépendances du conteneur
     volumes:
       - ./frontend:/app

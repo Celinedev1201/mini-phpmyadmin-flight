@@ -3,8 +3,7 @@ FROM php:8.3-cli-bookworm
 
 # Outils nécessaires à Composer et au dépôt MySQL
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        unzip curl ca-certificates gnupg \
+    && apt-get install -y --no-install-recommends unzip curl ca-certificates gnupg cron util-linux \
     && docker-php-ext-install pdo_mysql \
     && rm -rf /var/lib/apt/lists/*
 
