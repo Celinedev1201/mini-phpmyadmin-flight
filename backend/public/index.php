@@ -16,6 +16,7 @@ require dirname(__DIR__) . '/src/BackupCatalog.php';
 require dirname(__DIR__) . '/src/RestoreService.php';
 require dirname(__DIR__) . '/src/PostgresDatabase.php';
 require dirname(__DIR__) . '/src/PostgresValidation.php';
+require dirname(__DIR__) . '/src/PostgresDatabaseService.php';
 require dirname(__DIR__) . '/src/PostgresBackupService.php';
 require dirname(__DIR__) . '/src/PostgresBackupCatalog.php';
 require dirname(__DIR__) . '/src/PostgresRestoreService.php';

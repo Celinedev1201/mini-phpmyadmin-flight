@@ -1,5 +1,10 @@
 <?php
 
+// Même confirmation explicite que pour MySQL, vérifiée côté serveur.
+Flight::route('DELETE /api/postgres/databases/@database', function (string $database): void {
+    Api::run(fn () => PostgresDatabaseService::delete($database, Api::body()));
+});
+
 // Liste les bases accessibles, en excluant les bases internes PostgreSQL.
 Flight::route(
     'GET /api/postgres/databases',

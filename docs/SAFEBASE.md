@@ -20,6 +20,12 @@ Les dumps proviennent du serveur local : ne pas y déposer de SQL non fiable.
 
 ## Interface et routes
 
+Le bouton « Supprimer » demande de recopier exactement le nom de la base.
+La confirmation est aussi vérifiée par l’API. La suppression conserve les dumps,
+actualise la liste et retire la sélection supprimée. Les bases système, modèles
+et la base configurée dans `POSTGRES_DB` sont protégées. Les connexions actives
+ne sont pas interrompues : il faut les fermer avant de supprimer la base.
+
 La liste PostgreSQL se recharge après restauration, conserve la base sélectionnée
 si elle existe encore et choisit sinon la première base disponible. Le bouton
 « Actualiser les bases » permet aussi de réessayer après une erreur réseau.
@@ -29,6 +35,7 @@ Les composants d’historique et de restauration gardent `engine="mysql"` par d�
 | Action | MySQL | PostgreSQL |
 | --- | --- | --- |
 | Bases | `/api/databases` | `/api/postgres/databases` |
+| Supprimer (DELETE) | `/api/databases/{base}` | `/api/postgres/databases/{base}` |
 | Créer/lister les dumps | `/api/databases/{base}/backups` | `/api/postgres/databases/{base}/backups` |
 | Télécharger | `.../backups/{fichier}/download` | `.../backups/{fichier}/download` |
 | Restaurer | `.../backups/{fichier}/restore` | `.../backups/{fichier}/restore` |

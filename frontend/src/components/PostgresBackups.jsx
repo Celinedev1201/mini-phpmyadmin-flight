@@ -3,12 +3,14 @@ import { request } from "../services/api";
 import Feedback from "./Feedback";
 import BackupHistory from "./BackupHistory";
 import PostgresBackupForm from "./PostgresBackupForm";
+import DeleteButton from "./DeleteButton";
 
 function PostgresBackups() {
   const [databases, setDatabases] = useState([]);
   const [database, setDatabase] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [backupsVersion, setBackupsVersion] = useState(0);
   const [databasesVersion, setDatabasesVersion] = useState(0);
 
@@ -48,17 +50,28 @@ function PostgresBackups() {
         database={database}
         databases={databases}
         loading={loading}
-        onSelect={setDatabase}
+        onSelect={(name) => { setDatabase(name); setSuccess(""); }}
         onSaved={() => setBackupsVersion((value) => value + 1)}
       />
       <button className="action-button" type="button" disabled={loading}
         onClick={() => setDatabasesVersion((value) => value + 1)}>
         Actualiser les bases
       </button>
-      <Feedback loading={loading} error={error} />
+      {database && (
+        <DeleteButton key={`delete-${database}`}
+          path={`/api/postgres/databases/${encodeURIComponent(database)}`}
+          target={database} explicitName disabled={loading}
+          onDeleted={(data) => {
+            setDatabases((current) => current.filter((name) => name !== database));
+            setDatabase("");
+            setSuccess(data.message);
+            setDatabasesVersion((value) => value + 1);
+          }} />
+      )}
+      <Feedback loading={loading} error={error} success={success} />
       {database && (
         <BackupHistory
-          key={database}
+          key={`history-${database}`}
           database={database}
           engine="postgres"
           refreshKey={backupsVersion}
