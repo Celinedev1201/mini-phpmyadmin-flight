@@ -13,6 +13,7 @@ require dirname(__DIR__) . '/src/ColumnService.php';
 require dirname(__DIR__) . '/src/RowService.php';
 require dirname(__DIR__) . '/src/BackupService.php';
 require dirname(__DIR__) . '/src/BackupCatalog.php';
+require dirname(__DIR__) . '/src/RestoreService.php';
 
 require dirname(__DIR__) . '/src/routes/health.php';
 require dirname(__DIR__) . '/src/routes/databases.php';

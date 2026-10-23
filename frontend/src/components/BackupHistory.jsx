@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { request, databasePath } from "../services/api";
 import Feedback from "./Feedback";
+import RestoreBackup from "./RestoreBackup";
 
-function BackupHistory({ database, refreshKey }) {
+function BackupHistory({ database, refreshKey, onRestored }) {
   const [backups, setBackups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -78,6 +79,11 @@ function BackupHistory({ database, refreshKey }) {
                     >
                       Télécharger
                     </a>
+                    <RestoreBackup
+                      database={database}
+                      filename={backup.filename}
+                      onRestored={onRestored}
+                    />
                   </td>
                 </tr>
               ))}

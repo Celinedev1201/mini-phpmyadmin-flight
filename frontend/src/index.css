@@ -720,7 +720,6 @@ button:focus-visible {
   font-weight: 600;
 }
 
-
 .insert-row input:focus-visible {
   outline: 2px solid var(--violet);
   outline-offset: 3px;
@@ -743,18 +742,94 @@ button:focus-visible {
   background: var(--champagne);
 }
 
-@media (max-width: 700px) {
-  .insert-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
 /* sauvegarde de la base */
 .backup-actions {
   display: grid;
   justify-items: start;
   gap: 12px;
   margin-bottom: 24px;
+}
+
+/* Restauration d’une sauvegarde */
+.restore-backup {
+  display: grid;
+  gap: 10px;
+  min-width: 220px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgb(216 183 106 / 30%);
+}
+
+.restore-backup label {
+  display: grid;
+  gap: 8px;
+  color: #5d4d5f;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.restore-backup input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid rgb(216 183 106 / 65%);
+  border-radius: 6px;
+  background: #fbf8f2;
+  color: #2a172f;
+  font: inherit;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.restore-backup input::placeholder {
+  color: #8a788c;
+}
+
+.restore-backup input:focus-visible {
+  outline: none;
+  border-color: #7a3f83;
+  box-shadow: 0 0 0 3px rgb(122 63 131 / 12%);
+}
+
+.restore-backup button {
+  justify-self: start;
+  padding: 8px 16px;
+  border: 1px solid #d8b76a;
+  border-radius: 6px;
+  background: transparent;
+  color: #2a172f;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease;
+}
+
+.restore-backup button:hover:not(:disabled) {
+  border-color: #7a3f83;
+  background: rgb(201 167 216 / 18%);
+}
+
+.restore-backup button:focus-visible {
+  outline: 2px solid #7a3f83;
+  outline-offset: 3px;
+}
+
+.restore-backup input:disabled,
+.restore-backup button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.restore-backup p {
+  margin: 0;
+  max-width: 32ch;
+  white-space: normal;
+  font-size: 0.75rem;
+  line-height: 1.5;
 }
 
 /* 12. Adaptation tablette et téléphone : espacements réduits et menu au-dessus du contenu */
@@ -837,6 +912,10 @@ button:focus-visible {
 
   .main-footer {
     flex-wrap: wrap;
+  }
+
+  .insert-row {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

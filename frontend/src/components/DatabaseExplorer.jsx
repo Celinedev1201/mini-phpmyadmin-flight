@@ -7,7 +7,7 @@ import Feedback from "./Feedback";
 import CreateBackup from "./CreateBackup";
 import BackupHistory from "./BackupHistory";
 
-function DatabaseExplorer({ database, onDeleted }) {
+function DatabaseExplorer({ database, onDeleted, onRestored }) {
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState("");
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,7 @@ function DatabaseExplorer({ database, onDeleted }) {
     try {
       const data = await request(`${databasePath(database)}/tables`);
       setTables(data.tables);
-      // Une table supprimée ne doit plus rester sélectionnée.
+      // Retire la sélection si la table n’existe plus.
       setSelectedTable((previous) =>
         data.tables.includes(previous) ? previous : "",
       );
@@ -61,13 +61,12 @@ function DatabaseExplorer({ database, onDeleted }) {
         database={database}
         onCreated={() => setBackupsVersion((value) => value + 1)}
       />
-
       <BackupHistory
         key={database}
         database={database}
         refreshKey={backupsVersion}
+        onRestored={onRestored}
       />
-
       <div className="resource-actions">
         <DeleteButton
           path={databasePath(database)}

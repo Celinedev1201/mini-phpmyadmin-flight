@@ -37,3 +37,30 @@ Flight::route(
         });
     }
 );
+
+// Restaure une sauvegarde dans une nouvelle base.
+Flight::route(
+    'POST /api/databases/@database/backups/@filename/restore',
+    function (string $database, string $filename): void {
+        Api::run(function () use ($database, $filename) {
+            $data = Api::body();
+            $target = $data['target'] ?? '';
+
+            if (!is_string($target) || trim($target) === '') {
+                throw new HttpError(
+                    'Indiquez le nom de la nouvelle base.',
+                    400
+                );
+            }
+
+            // Le nom transmis dans l’URL ne contient pas l’extension.
+            $filename .= '.sql';
+
+            return RestoreService::restore(
+                $database,
+                $filename,
+                trim($target)
+            );
+        }, 201);
+    }
+);
