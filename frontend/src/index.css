@@ -832,6 +832,100 @@ button:focus-visible {
   line-height: 1.5;
 }
 
+/* 17. Formulaire d’ajout d’une connexion */
+
+.connection-panel {
+  margin-top: 32px;
+  border-color: var(--gold);
+}
+
+.connection-panel .panel-heading {
+  padding: 20px 28px;
+  background: rgb(201 167 216 / 10%);
+}
+
+.connection-panel h2 {
+  margin: 0;
+  color: var(--prune);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.connection-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 28px;
+  padding: 28px;
+}
+
+.connection-field {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.connection-field label {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.connection-field input,
+.connection-field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid var(--champagne);
+  border-radius: 8px;
+  background: var(--ivory);
+  color: var(--prune);
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.connection-field input:focus-visible,
+.connection-field select:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+}
+
+.connection-field-wide,
+.connection-form > .action-button,
+.connection-form > .feedback {
+  grid-column: 1 / -1;
+}
+
+.connection-form > .action-button {
+  justify-self: start;
+  min-height: 46px;
+  margin: 4px 0 0;
+  padding: 12px 24px;
+  background: var(--prune);
+  color: var(--cream);
+  font-weight: 600;
+}
+
+.connection-form > .action-button:hover:not(:disabled) {
+  background: var(--violet);
+}
+
+.connection-form > .feedback {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .connection-form {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px;
+  }
+}
+
 /* 12. Adaptation tablette et téléphone : espacements réduits et menu au-dessus du contenu */
 
 @media (max-width: 1000px) {

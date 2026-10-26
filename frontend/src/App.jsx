@@ -4,6 +4,7 @@ import DatabaseExplorer from "./components/DatabaseExplorer";
 import PostgresBackups from "./components/PostgresBackups";
 import Feedback from "./components/Feedback";
 import { request } from "./services/api";
+import ConnectionForm from "./components/ConnectionForm";
 
 function App() {
   const [databases, setDatabases] = useState([]);
@@ -99,6 +100,7 @@ function App() {
           <span>ESPACE DE TRAVAIL</span>
           <span className="environment">Développement local</span>
         </header>
+        <ConnectionForm />
         <section className="explorer" aria-labelledby="explorer-title">
           <Feedback success={success} />
           {selectedDatabase ? (
