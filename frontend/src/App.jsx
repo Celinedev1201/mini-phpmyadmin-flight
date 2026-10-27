@@ -10,6 +10,7 @@ const views = [
 ];
 // Affiche le menu et garde en mémoire la vue ouverte pour retrouver ses sélections.
 export default function App() {
+  const [mysqlMenu, setMysqlMenu] = useState(null);
   const [connectionOpen, setConnectionOpen] = useState(false);
   const [active, setActive] = useState("connections");
   // Les vues déjà ouvertes restent montées : leurs sélections ne sont pas perdues.
@@ -38,6 +39,7 @@ export default function App() {
             </button>
           ))}
         </nav>
+        <div ref={setMysqlMenu} hidden={active !== "mysql"} />
         <div className="sidebar-footer">
           <span className="footer-line" />
           <p>Explorer. Comprendre. Construire.</p>
@@ -71,7 +73,7 @@ export default function App() {
                   {connectionOpen && <ConnectionForm />}
                 </div>
               </section>
-            ) : visited.includes(id) && <Component />}
+            ) : visited.includes(id) && <Component menuTarget={mysqlMenu} />}
           </div>
         ))}
         <footer className="main-footer">

@@ -67,6 +67,7 @@ function BackupHistory({ database, refreshKey, onRestored, engine = "mysql" }) {
                   <td>{new Date(backup.createdAt).toLocaleString("fr-FR")}</td>
                   <td>{(backup.size / 1024).toFixed(1)} Ko</td>
                   <td>
+                    <div className="backup-buttons">
                     <a
                       className="action-button"
                       href={`${path}/${encodeURIComponent(backup.filename.slice(0, -4))}/download`}
@@ -79,6 +80,7 @@ function BackupHistory({ database, refreshKey, onRestored, engine = "mysql" }) {
                       engine={engine}
                       onRestored={onRestored}
                     />
+                    </div>
                   </td>
                 </tr>
               ))}

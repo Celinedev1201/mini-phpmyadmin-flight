@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { request } from "../services/api";
 import DatabaseExplorer from "./DatabaseExplorer";
 import CreateDatabase from "./CreateDatabase";
 import Feedback from "./Feedback";
 // Garde la base sélectionnée et affiche le menu et l’explorateur MySQL.
-export default function MysqlView() {
+export default function MysqlView({ menuTarget }) {
   const [databases, setDatabases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -40,7 +41,8 @@ export default function MysqlView() {
   }
   return (
     <div className="mysql-layout">
-      <aside className="mysql-menu" aria-label="Gestion MySQL">
+      {menuTarget && createPortal(
+      <div className="mysql-menu">
         <CreateDatabase onCreated={loadDatabases} />
         <nav aria-label="Bases de données">
           <div className="nav-heading">
@@ -61,7 +63,7 @@ export default function MysqlView() {
             ))}
           </ul>
         </nav>
-      </aside>
+      </div>, menuTarget)}
         <section className="explorer" aria-labelledby="explorer-title">
           <Feedback success={success} />
           {selectedDatabase ? (
