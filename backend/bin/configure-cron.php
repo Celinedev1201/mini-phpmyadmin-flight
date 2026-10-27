@@ -5,10 +5,10 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 
-require dirname(__DIR__) . '/src/Api.php';
-require dirname(__DIR__) . '/src/SqlValidation.php';
+require dirname(__DIR__) . '/src/http/Api.php';
+require dirname(__DIR__) . '/src/validation/SqlValidation.php';
 
-require dirname(__DIR__) . '/src/PostgresValidation.php';
+require dirname(__DIR__) . '/src/validation/PostgresValidation.php';
 
 $postgres = getenv('PG_BACKUP_DATABASE') ?: getenv('PG_DATABASE');
 PostgresValidation::database($postgres ?: '');

@@ -6,12 +6,12 @@ if (PHP_SAPI !== 'cli') {
 }
 
 require dirname(__DIR__) . '/vendor/autoload.php';
-require dirname(__DIR__) . '/src/Api.php';
-require dirname(__DIR__) . '/src/SqlValidation.php';
-require dirname(__DIR__) . '/src/BackupService.php';
+require dirname(__DIR__) . '/src/http/Api.php';
+require dirname(__DIR__) . '/src/validation/SqlValidation.php';
+require dirname(__DIR__) . '/src/services/BackupService.php';
 
-require dirname(__DIR__) . '/src/PostgresValidation.php';
-require dirname(__DIR__) . '/src/PostgresBackupService.php';
+require dirname(__DIR__) . '/src/validation/PostgresValidation.php';
+require dirname(__DIR__) . '/src/services/PostgresBackupService.php';
 
 // Les arguments sont le nom de la base puis le moteur, MySQL étant le choix par défaut.
 $database = $argv[1] ?? '';

@@ -52,30 +52,42 @@ Après une création, un renommage ou une suppression de table, la liste est rec
 
 Il n’y a pas de hook personnalisé : seuls les outils habituels de React sont utilisés.
 
-## PHP : recevoir la demande et agir sur MySQL
+## PHP : recevoir la demande et agir sur les bases SQL
 
 `backend/public/index.php` charge les classes et les routes, puis démarre FlightPHP.
+
+Chaque dossier a un rôle simple :
+
+- `backend/public/` contient l’entrée de l’API : `index.php` charge les fichiers et démarre FlightPHP.
+- `backend/bin/` contient les scripts lancés dans le terminal ou par cron.
+- `backend/src/database/` ouvre les connexions à MySQL et PostgreSQL.
+- `backend/src/http/` lit les demandes et prépare les réponses HTTP. `HttpError` reste dans `Api.php`.
+- `backend/src/validation/` vérifie les noms, les valeurs et les confirmations reçues.
+- `backend/src/services/` réalise les actions sur les bases, tables, colonnes, lignes et sauvegardes.
+- `backend/src/backups/` retrouve les fichiers de sauvegarde pour les lister ou les télécharger.
+- `backend/src/connections/` teste les informations de connexion saisies dans le formulaire.
+- `backend/src/routes/` relie chaque adresse HTTP à l’action correspondante.
 
 Les routes sont dans `backend/src/routes/` :
 
 | Route | Service appelé | Opérations |
 | --- | --- | --- |
-| `databases.php` | `DatabaseService.php` | Lister, créer et supprimer les bases personnelles. |
-| `tables.php` | `TableService.php` | Lister, créer, renommer et supprimer les tables. |
-| `columns.php` | `ColumnService.php` | Lire, ajouter, modifier et supprimer les colonnes. |
-| `rows.php` | `RowService.php` | Lire, ajouter, modifier et supprimer les lignes. |
+| `databases.php` | `services/DatabaseService.php` | Lister, créer et supprimer les bases personnelles. |
+| `tables.php` | `services/TableService.php` | Lister, créer, renommer et supprimer les tables. |
+| `columns.php` | `services/ColumnService.php` | Lire, ajouter, modifier et supprimer les colonnes. |
+| `rows.php` | `services/RowService.php` | Lire, ajouter, modifier et supprimer les lignes. |
 | `health.php` | Utilise directement la connexion PDO | Vérifier que l’API et MySQL répondent. |
 
-Les services et les classes communes sont dans `backend/src/` :
+Les chemins suivants partent de `backend/src/` :
 
-- `Database.php` : ouvre la connexion PDO à MySQL.
-- `SchemaService.php` : demande à MySQL la description réelle de la table, ses colonnes
+- `database/Database.php` : ouvre la connexion PDO à MySQL.
+- `services/SchemaService.php` : demande à MySQL la description réelle de la table, ses colonnes
   et sa clé primaire. Par exemple, il découvre que `id` identifie un produit.
-- `SqlValidation.php` : vérifie les noms, les types, les valeurs et les confirmations.
+- `validation/SqlValidation.php` : vérifie les noms, les types, les valeurs et les confirmations.
   Il protège aussi les bases système pour éviter une mauvaise manipulation.
-- `Api.php` : lit le JSON envoyé par React et prépare les réponses ou les erreurs HTTP.
+- `http/Api.php` : lit le JSON envoyé par React et prépare les réponses ou les erreurs HTTP.
 
-`api.js` travaille dans le navigateur ; `Api.php` travaille sur le serveur PHP.
+`api.js` travaille dans le navigateur ; `http/Api.php` travaille sur le serveur PHP.
 
 ## Exemple : modifier le nom d’un produit
 
@@ -108,8 +120,8 @@ Le renommage d’une base MySQL n’est pas proposé ; cette limite est expliqu�
 - `PostgresBackups.jsx` charge les bases, conserve la sélection et recharge après restauration.
 - `PostgresBackupForm.jsx` gère la création du dump et ses messages.
 - `BackupHistory.jsx` et `RestoreBackup.jsx` partagent les écrans via `engine`.
-- `routes/postgres.php` appelle les services `PostgresBackupService`,
-  `PostgresBackupCatalog` et `PostgresRestoreService`.
+- `routes/postgres.php` appelle `services/PostgresBackupService.php`,
+  `backups/PostgresBackupCatalog.php` et `services/PostgresRestoreService.php`.
 - `bin/backup.php base [mysql|postgres]` lance la sauvegarde en CLI (MySQL par défaut).
 - `bin/configure-cron.php` prépare une tâche quotidienne pour les deux moteurs.
 
