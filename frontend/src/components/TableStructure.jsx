@@ -7,6 +7,9 @@ import TableActions from "./TableActions";
 import TableRows from "./TableRows";
 import Feedback from "./Feedback";
 // Affiche les colonnes et rassemble les formulaires et les données de la table.
+// Les colonnes sont chargées depuis l’API. isTable autorise les actions sur une table et limite les vues à la
+// lecture. Les compteurs permettent de reconstruire les formulaires ou de rafraîchir les lignes après une
+// action.
 function TableStructure({ database, table, onTableChanged }) {
   const [columns, setColumns] = useState([]);
   const [isTable, setIsTable] = useState(false);
@@ -16,6 +19,8 @@ function TableStructure({ database, table, onTableChanged }) {
   const [structureVersion, setStructureVersion] = useState(0);
   const [rowsVersion, setRowsVersion] = useState(0);
   // Charge les colonnes et vérifie si la sélection est une table modifiable ou une vue.
+  // La route utilise la base et la table sélectionnées. columns contient leurs descriptions et isTable distingue
+  // une vraie table d’une vue. Le finally réactive l’interface après la réponse.
   async function loadColumns() {
     setLoading(true);
     setError("");
@@ -32,6 +37,8 @@ function TableStructure({ database, table, onTableChanged }) {
   // Relance le chargement quand les valeurs entre crochets changent.
   useEffect(() => { loadColumns(); }, [database, table]);
   // Affiche le résultat et recharge la structure après un changement de colonne.
+  // Le message est affiché et structureVersion augmente. Ce compteur recrée les formulaires pour ne pas garder
+  // d’anciens noms de colonnes. loadColumns() relit ensuite la structure.
   function columnChanged(data) {
     setSuccess(data.message);
     // Reconstruit aussi les formulaires, car les noms et la clé peuvent changer.

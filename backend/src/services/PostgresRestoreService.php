@@ -5,6 +5,8 @@
 final class PostgresRestoreService
 {
     // Crée une nouvelle base PostgreSQL puis y importe la sauvegarde en une seule transaction.
+    // La fonction vérifie le fichier puis crée une base distincte avec template0. psql importe le SQL dans une
+    // transaction unique. Si une instruction échoue, l’import est annulé et la nouvelle base reste vide.
     public static function restore(
         string $database,
         string $filename,

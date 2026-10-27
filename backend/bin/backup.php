@@ -14,6 +14,7 @@ require dirname(__DIR__) . '/src/validation/PostgresValidation.php';
 require dirname(__DIR__) . '/src/services/PostgresBackupService.php';
 
 // Les arguments sont le nom de la base puis le moteur, MySQL étant le choix par défaut.
+// argv contient les mots saisis après php bin/backup.php. Sans base, le script affiche l’aide et s’arrête.
 $database = $argv[1] ?? '';
 $engine = $argv[2] ?? 'mysql';
 
@@ -26,6 +27,7 @@ try {
     if (!in_array($engine, ['mysql', 'postgres'], true)) {
         throw new InvalidArgumentException('Moteur inconnu.');
     }
+// Le moteur choisit le service de sauvegarde. Aucun export n’est lancé avant les vérifications précédentes.
     $backup = $engine === 'postgres'
         ? PostgresBackupService::create($database)
         : BackupService::create($database);

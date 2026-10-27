@@ -3,12 +3,16 @@ import { request, tablePath } from "../services/api";
 import Feedback from "./Feedback";
 import DeleteButton from "./DeleteButton";
 // Permet de renommer la table ou de demander sa suppression.
+// database et table construisent l’adresse de la table. Le champ name commence avec son nom actuel. Le composant
+// réutilise DeleteButton pour garder la confirmation de suppression.
 export default function TableActions({ database, table, onChanged }) {
   const [name, setName] = useState(table);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const path = tablePath(database, table);
   // Envoie le nouveau nom de la table et avertit le parent pour actualiser la sélection.
+  // Le nom saisi est transmis par PATCH à l’adresse de la table. onChanged() avertit le parent après réussite pour
+  // retrouver la table sous son nouveau nom. Le catch affiche le refus du serveur.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

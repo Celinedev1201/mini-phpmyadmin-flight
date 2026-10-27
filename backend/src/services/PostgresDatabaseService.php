@@ -4,6 +4,8 @@
 final class PostgresDatabaseService
 {
     // Vérifie les protections et la confirmation puis supprime la base sans effacer ses sauvegardes.
+    // La confirmation et le nom recopié sont contrôlés avant toute suppression. La base configurée et les bases
+    // modèles sont protégées. DROP DATABASE reste sans FORCE : les connexions actives ne sont pas coupées.
     public static function delete(string $database, array $data): array
     {
         PostgresValidation::database($database);

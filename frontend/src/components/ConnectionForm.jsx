@@ -2,6 +2,8 @@ import { useState } from "react";
 import { request } from "../services/api";
 import Feedback from "./Feedback";
 // Affiche les champs de connexion et permet de tester les informations sans les enregistrer.
+// connection regroupe les valeurs des champs, dont le moteur et le port. Le formulaire sert seulement à tester
+// l’accès. loading empêche plusieurs tests simultanés et les messages affichent la réponse.
 function ConnectionForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -17,6 +19,8 @@ function ConnectionForm() {
     password: "",
   });
   // Recopie la valeur saisie dans le bon champ de la connexion.
+  // event.target fournit le nom du champ et sa nouvelle valeur. La copie de previous conserve les autres champs
+  // pendant que seul le champ concerné est remplacé.
   function handleChange(event) {
     const { name, value } = event.target;
     setConnection((previous) => ({
@@ -25,6 +29,8 @@ function ConnectionForm() {
     }));
   }
   // Change le moteur et remet son port habituel : 3306 pour MySQL, 5432 pour PostgreSQL.
+  // Le moteur choisi remplace l’ancien. Le port est remis à 3306 pour MySQL ou à 5432 pour PostgreSQL. Les autres
+  // informations déjà saisies sont conservées.
   function handleEngineChange(event) {
     const engine = event.target.value;
     setConnection((previous) => ({
@@ -34,6 +40,8 @@ function ConnectionForm() {
     }));
   }
   // Envoie les informations au test de connexion et affiche la réponse du serveur.
+  // preventDefault() garde la page ouverte. La demande POST transmet les champs à la route de test. Le message de
+  // réponse est affiché, sans sauvegarder la connexion. finally remet loading à false.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

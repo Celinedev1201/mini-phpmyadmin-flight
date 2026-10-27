@@ -4,11 +4,15 @@ final class ColumnService
 {
     private SchemaService $schema;
     // Prépare les informations de la table utilisées par les actions sur ses colonnes.
+    // La base et la table reçues servent à créer un SchemaService. Cet objet garde la connexion SQL et les
+    // informations de la table pour les autres méthodes.
     public function __construct(string $database, string $table)
     {
         $this->schema = new SchemaService($database, $table);
     }
     // Renvoie les colonnes et précise si leur type peut être modifié par l’application.
+    // columns() récupère les informations de chaque colonne. typeRestriction() ajoute une explication si son type
+    // est trop particulier pour être modifié. isTable indique si les modifications sont autorisées.
     public function list(): array
     {
         $columns = $this->schema->columns();
@@ -18,6 +22,8 @@ final class ColumnService
         return ['columns' => $columns, 'isTable' => $this->schema->tableInfo['TABLE_TYPE'] === 'BASE TABLE'];
     }
     // Vérifie le nom et le type puis ajoute une colonne qui accepte les valeurs NULL.
+    // Le formulaire fournit name et type. La validation traduit le type choisi en SQL autorisé. ALTER TABLE ajoute
+    // la colonne ; NULL signifie qu’une case peut ne pas avoir de valeur.
     public function create(array $data): array
     {
         $this->schema->requireTable();
@@ -27,6 +33,8 @@ final class ColumnService
         return ['message' => 'Colonne ajoutée avec succès'];
     }
     // Renomme la colonne et change son type si un nouveau type a été choisi.
+    // Le nom actuel permet de retrouver les attributs de la colonne. Avec un nouveau type, CHANGE COLUMN modifie le
+    // nom et le type ensemble. Sans type choisi, seul RENAME COLUMN est utilisé.
     public function update(string $column, array $data): array
     {
         $this->schema->requireTable();
@@ -47,6 +55,8 @@ final class ColumnService
         return ['message' => 'Colonne modifiée avec succès'];
     }
     // Vérifie la colonne et la confirmation puis supprime cette colonne de la table.
+    // Le nom permet de retrouver la colonne. Après vérification de la confirmation, DROP COLUMN supprime cette
+    // colonne et les valeurs qu’elle contenait.
     public function delete(string $column, array $data): array
     {
         $this->schema->requireTable();
@@ -56,6 +66,8 @@ final class ColumnService
         return ['message' => 'Colonne supprimée avec succès'];
     }
     // Explique pourquoi un type ou un attribut particulier empêche le changement de type.
+    // La description reçue indique le type SQL et les attributs de la colonne. Si l’application ne sait pas les
+    // conserver, la fonction renvoie une explication. Une chaîne vide signifie que le changement est proposé.
     private static function typeRestriction(array $column): string
     {
         if ($column['GENERATION_EXPRESSION'] !== '' || str_contains($column['COLUMN_TYPE'], 'zerofill')
@@ -66,6 +78,8 @@ final class ColumnService
         return '';
     }
     // Prépare le nouveau type SQL en conservant les attributs de la colonne pris en charge.
+    // La fonction reçoit la connexion, l’ancienne colonne et le nouveau type SQL. Elle recompose sa définition en
+    // gardant les attributs compatibles, comme NULL, la valeur par défaut et le commentaire.
     private static function typeDefinition(PDO $pdo, array $column, string $type): string
     {
         if (self::typeRestriction($column) !== '') {

@@ -3,6 +3,8 @@ import { request, databasePath } from "../services/api";
 import Feedback from "./Feedback";
 import RestoreBackup from "./RestoreBackup";
 // Affiche les sauvegardes de la base avec les actions de téléchargement et de restauration.
+// database et engine déterminent l’adresse à appeler. refreshKey change après une sauvegarde pour relire
+// l’historique. Chaque fichier propose le téléchargement et son propre formulaire de restauration.
 function BackupHistory({ database, refreshKey, onRestored, engine = "mysql" }) {
   const [backups, setBackups] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,6 +19,8 @@ function BackupHistory({ database, refreshKey, onRestored, engine = "mysql" }) {
   useEffect(() => {
     const controller = new AbortController();
     // Récupère l’historique des sauvegardes et ignore la réponse si la demande a été annulée.
+    // La route dépend du moteur et de la base. request() récupère les fichiers. Le signal d’annulation évite
+    // d’appliquer une ancienne réponse après le changement ou la fermeture du composant.
     async function loadBackups() {
       setLoading(true);
       setError("");

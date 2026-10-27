@@ -1,11 +1,15 @@
 <?php
 
 // Même confirmation explicite que pour MySQL, vérifiée côté serveur.
+// Flight associe une méthode HTTP et une adresse à la fonction ci-dessous.
+// Les paramètres précédés de @ dans l’adresse sont transmis aux arguments de cette fonction.
 Flight::route('DELETE /api/postgres/databases/@database', function (string $database): void {
     Api::run(fn () => PostgresDatabaseService::delete($database, Api::body()));
 });
 
 // Liste les bases accessibles, en excluant les bases internes PostgreSQL.
+// Flight associe une méthode HTTP et une adresse à la fonction ci-dessous.
+// Les paramètres précédés de @ dans l’adresse sont transmis aux arguments de cette fonction.
 Flight::route(
     'GET /api/postgres/databases',
     function (): void {
@@ -34,6 +38,8 @@ Flight::route(
 );
 
 // Crée une sauvegarde de la base PostgreSQL sélectionnée.
+// Flight associe une méthode HTTP et une adresse à la fonction ci-dessous.
+// Les paramètres précédés de @ dans l’adresse sont transmis aux arguments de cette fonction.
 Flight::route(
     'POST /api/postgres/databases/@database/backups',
     function (string $database): void {
@@ -45,6 +51,8 @@ Flight::route(
 );
 
 // Liste les sauvegardes PostgreSQL.
+// Flight associe une méthode HTTP et une adresse à la fonction ci-dessous.
+// Les paramètres précédés de @ dans l’adresse sont transmis aux arguments de cette fonction.
 Flight::route(
     'GET /api/postgres/databases/@database/backups',
     function (string $database): void {
@@ -53,6 +61,8 @@ Flight::route(
 );
 
 // Télécharge un fichier SQL. Le nom dans l’URL est sans extension.
+// Flight associe une méthode HTTP et une adresse à la fonction ci-dessous.
+// Les paramètres précédés de @ dans l’adresse sont transmis aux arguments de cette fonction.
 Flight::route(
     'GET /api/postgres/databases/@database/backups/@filename/download',
     function (string $database, string $filename): void {
@@ -73,6 +83,8 @@ Flight::route(
 );
 
 // Restaure une sauvegarde PostgreSQL dans une nouvelle base.
+// Flight associe une méthode HTTP et une adresse à la fonction ci-dessous.
+// Les paramètres précédés de @ dans l’adresse sont transmis aux arguments de cette fonction.
 Flight::route(
     'POST /api/postgres/databases/@database/backups/@filename/restore',
     function (string $database, string $filename): void {

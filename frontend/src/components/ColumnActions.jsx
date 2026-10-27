@@ -3,6 +3,8 @@ import { request, tablePath, columnTypes } from "../services/api";
 import DeleteButton from "./DeleteButton";
 import Feedback from "./Feedback";
 // Permet de renommer une colonne, de changer son type ou de demander sa suppression.
+// column contient la description actuelle de la colonne. editing décide si son formulaire est visible.
+// TYPE_RESTRICTION explique pourquoi certains types ne peuvent pas être changés.
 export default function ColumnActions({ column, database, table, disabled, onChanged }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(column.COLUMN_NAME);
@@ -11,6 +13,8 @@ export default function ColumnActions({ column, database, table, disabled, onCha
   const [error, setError] = useState("");
   const path = `${tablePath(database, table)}/columns/${encodeURIComponent(column.COLUMN_NAME)}`;
   // Prépare les valeurs actuelles de la colonne avant d’ouvrir son formulaire.
+  // Le nom actuel de la colonne est remis dans le champ et le type reste vide pour le conserver par défaut.
+  // L’erreur précédente est effacée avant d’afficher le formulaire.
   function openEditor() {
     setName(column.COLUMN_NAME);
     setType("");
@@ -18,6 +22,8 @@ export default function ColumnActions({ column, database, table, disabled, onCha
     setEditing(true);
   }
   // Enregistre le nom et le type choisis, puis ferme l’éditeur si la demande réussit.
+  // La demande PATCH envoie le nom et le type choisis. L’éditeur se ferme seulement après une réussite et
+  // onChanged() actualise la structure. Le catch laisse le formulaire ouvert si le serveur refuse.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

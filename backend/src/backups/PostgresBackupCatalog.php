@@ -3,8 +3,11 @@
 // Consulte les sauvegardes PostgreSQL présentes sur le disque.
 final class PostgresBackupCatalog
 {
+    // /var/backups/safebase est le dossier de sauvegardes partagé avec l’ordinateur par Docker.
     private const ROOT = '/var/backups/safebase/postgres';
     // Lit les sauvegardes PostgreSQL sur le disque et les classe par date décroissante.
+    // glob() cherche les fichiers .sql dans le dossier de la base. Chaque résultat contient le nom, la taille et la
+    // date UTC. usort() les classe du plus récent au plus ancien.
     public static function list(string $database): array
     {
         PostgresValidation::database($database);
@@ -34,6 +37,8 @@ final class PostgresBackupCatalog
         return ['backups' => $backups];
     }
     // Vérifie le fichier PostgreSQL demandé avant d’autoriser son téléchargement.
+    // La fonction vérifie le nom de la base et le format du fichier demandé. Elle refuse les liens et les fichiers
+    // absents ou illisibles. Le chemin renvoyé sera utilisé par le téléchargement ou la restauration.
     public static function downloadPath(
         string $database,
         string $filename

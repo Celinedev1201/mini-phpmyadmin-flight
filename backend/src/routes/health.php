@@ -1,6 +1,7 @@
 <?php
 
 // Vérifie que l’API fonctionne
+// Flight appelle cette fonction quand le navigateur demande cette adresse avec la méthode indiquée.
 Flight::route('GET /', function (): void {
     Flight::json([
         'message' => 'API mini phpMyAdmin opérationnelle',
@@ -8,6 +9,7 @@ Flight::route('GET /', function (): void {
 });
 
 // Vérifie la connexion à MySQL
+// Flight appelle cette fonction quand le navigateur demande cette adresse avec la méthode indiquée.
 Flight::route('GET /api/database/status', function (): void {
     try {
         $pdo = Database::connect();
@@ -30,6 +32,7 @@ Flight::route('GET /api/database/status', function (): void {
 });
 
 // Vérifie que PHP peut se connecter à PostgreSQL.
+// Flight appelle cette fonction quand le navigateur demande cette adresse avec la méthode indiquée.
 Flight::route(
     'GET /api/postgres/status',
     function (): void {

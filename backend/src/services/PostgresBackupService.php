@@ -3,8 +3,11 @@
 // Exporte une base PostgreSQL dans le dossier partagé des sauvegardes.
 final class PostgresBackupService
 {
+    // /var/backups/safebase est le dossier de sauvegardes partagé avec l’ordinateur par Docker.
     private const ROOT = '/var/backups/safebase/postgres';
     // Exporte la base PostgreSQL avec pg_dump et conserve seulement une sauvegarde terminée.
+    // pg_dump exporte la base dans un fichier temporaire. Le mot de passe passe par l’environnement du processus. Si
+    // la commande réussit et que le fichier contient des données, rename() rend la sauvegarde disponible.
     public static function create(string $database): array
     {
         PostgresValidation::database($database);

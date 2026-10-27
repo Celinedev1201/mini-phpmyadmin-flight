@@ -7,6 +7,8 @@ import Feedback from "./Feedback";
 import CreateBackup from "./CreateBackup";
 import BackupHistory from "./BackupHistory";
 // Rassemble les tables, les sauvegardes et les actions de la base MySQL choisie.
+// database indique la base à explorer. Les états gardent ses tables et la table sélectionnée. Les fonctions
+// transmises aux enfants permettent de recharger les listes après leurs actions.
 function DatabaseExplorer({ database, onDeleted, onRestored }) {
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState("");
@@ -15,6 +17,9 @@ function DatabaseExplorer({ database, onDeleted, onRestored }) {
   const [success, setSuccess] = useState("");
   const [backupsVersion, setBackupsVersion] = useState(0);
   // Charge les tables de la base et retire la sélection si la table n’existe plus.
+  // L’adresse contient la base sélectionnée. Les tables reçues remplacent la liste affichée. Si la table
+  // sélectionnée a disparu, sa sélection est effacée. Une erreur est affichée sans bloquer définitivement le
+  // chargement.
   async function loadTables() {
     setLoading(true);
     setError("");
@@ -36,6 +41,8 @@ function DatabaseExplorer({ database, onDeleted, onRestored }) {
     loadTables();
   }, [database]);
   // Met à jour la sélection après une modification de table puis recharge la liste.
+  // Le serveur peut renvoyer un nouveau nom après un renommage. Ce nom devient la sélection, le message est
+  // affiché et loadTables() récupère la liste à jour.
   function tableChanged(data) {
     setSelectedTable(data.name || "");
     setSuccess(data.message);

@@ -1,6 +1,8 @@
 <?php
 
 // Déclenche une sauvegarde de la base sélectionnée.
+// Flight associe une méthode HTTP et une adresse à la fonction ci-dessous.
+// Les paramètres précédés de @ dans l’adresse sont transmis aux arguments de cette fonction.
 Flight::route(
     'POST /api/databases/@database/backups',
     function (string $database): void {
@@ -9,6 +11,8 @@ Flight::route(
 );
 
 // Liste les sauvegardes disponibles pour cette base.
+// Flight associe une méthode HTTP et une adresse à la fonction ci-dessous.
+// Les paramètres précédés de @ dans l’adresse sont transmis aux arguments de cette fonction.
 Flight::route(
     'GET /api/databases/@database/backups',
     function (string $database): void {
@@ -17,6 +21,8 @@ Flight::route(
 );
 
 // Envoie la sauvegarde au navigateur sous forme de fichier SQL.
+// Flight associe une méthode HTTP et une adresse à la fonction ci-dessous.
+// Les paramètres précédés de @ dans l’adresse sont transmis aux arguments de cette fonction.
 Flight::route(
     'GET /api/databases/@database/backups/@filename/download',
     function (string $database, string $filename): void {
@@ -39,6 +45,8 @@ Flight::route(
 );
 
 // Restaure une sauvegarde dans une nouvelle base.
+// Flight associe une méthode HTTP et une adresse à la fonction ci-dessous.
+// Les paramètres précédés de @ dans l’adresse sont transmis aux arguments de cette fonction.
 Flight::route(
     'POST /api/databases/@database/backups/@filename/restore',
     function (string $database, string $filename): void {

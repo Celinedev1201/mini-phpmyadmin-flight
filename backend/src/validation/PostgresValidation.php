@@ -4,6 +4,8 @@
 final class PostgresValidation
 {
     // Vérifie le nom PostgreSQL et protège les bases internes et les bases modèles.
+    // preg_match() limite le nom à 63 caractères et aux caractères acceptés par l’application. La comparaison en
+    // minuscules protège aussi postgres, template0 et template1, qui servent au serveur.
     public static function database(string $name): void
     {
         if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]{0,62}$/D', $name)) {

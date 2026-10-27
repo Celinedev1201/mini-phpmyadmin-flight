@@ -5,6 +5,8 @@ import BackupHistory from "./BackupHistory";
 import PostgresBackupForm from "./PostgresBackupForm";
 import DeleteButton from "./DeleteButton";
 // Rassemble les bases PostgreSQL, leurs sauvegardes et les actions disponibles.
+// Le composant charge les bases et garde la sélection encore existante. Les compteurs déclenchent une nouvelle
+// lecture après une sauvegarde, une restauration ou une suppression.
 function PostgresBackups() {
   const [databases, setDatabases] = useState([]);
   const [database, setDatabase] = useState("");
@@ -19,6 +21,8 @@ function PostgresBackups() {
     setLoading(true);
     setError("");
     // Récupère les bases auprès du serveur et met à jour la liste affichée.
+    // La demande GET lit la liste depuis l’API. setDatabases() garde les noms reçus. Le catch garde le message
+    // d’erreur et le finally termine le chargement, même si la demande échoue.
     async function loadDatabases() {
       try {
         const data = await request("/api/postgres/databases", {

@@ -2,6 +2,8 @@ import { useEffect, useId, useState } from "react";
 import { request, databasePath } from "../services/api";
 import Feedback from "./Feedback";
 // Affiche le formulaire de création d’une table dans la base sélectionnée.
+// database indique où créer la table et onCreated est la fonction du parent qui recharge la liste. open contrôle
+// l’affichage du formulaire et les autres états gardent la saisie, le chargement et les messages.
 function CreateTable({ database, onCreated }) {
   const formId = useId();
   const [open, setOpen] = useState(false);
@@ -18,6 +20,8 @@ function CreateTable({ database, onCreated }) {
   }, [database]);
 
   // Ouvre ou ferme le formulaire sans envoyer de demande au serveur.
+  // open passe de false à true ou l’inverse. Le nom et les messages sont réinitialisés pour repartir avec un
+  // formulaire vide. Aucun appel à l’API n’est effectué.
   function toggleForm() {
     setOpen((current) => !current);
     setName("");
@@ -26,6 +30,9 @@ function CreateTable({ database, onCreated }) {
   }
 
   // Crée la table demandée et avertit le composant parent pour recharger la liste.
+  // preventDefault() empêche le navigateur de recharger la page. POST transmet le nom saisi. Après réussite, le
+  // formulaire se ferme et onCreated() recharge les tables. En cas d’erreur, le champ reste rempli et le
+  // formulaire reste ouvert.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

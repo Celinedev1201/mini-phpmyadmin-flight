@@ -4,6 +4,8 @@ import Feedback from "./Feedback";
 import DeleteButton from "./DeleteButton";
 import RowForm from "./RowForm";
 // Affiche au maximum 50 lignes et prépare les actions sur la ligne choisie.
+// La réponse du serveur donne les lignes et leur clé primaire. Cette clé identifie la ligne SQL, tandis que
+// renderKey sert uniquement à l’affichage React. Le formulaire d’édition reçoit les valeurs de la ligne choisie.
 function TableRows({ database, table, columns, refreshKey }) {
   const [rows, setRows] = useState([]);
   const [primaryKey, setPrimaryKey] = useState([]);
@@ -18,6 +20,8 @@ function TableRows({ database, table, columns, refreshKey }) {
   useEffect(() => {
     let active = true;
     // Charge les lignes et les informations qui permettent de les modifier ou de les supprimer.
+    // La réponse contient les lignes, leur clé primaire et une éventuelle raison de bloquer les actions. active
+    // empêche une ancienne réponse de modifier un composant qui a déjà changé ou disparu.
     async function loadRows() {
       setLoading(true);
       setError("");
@@ -39,12 +43,16 @@ function TableRows({ database, table, columns, refreshKey }) {
     return () => { active = false; };
   }, [path, refreshKey, version]);
   // Ferme l’édition et change le compteur pour déclencher un nouveau chargement des lignes.
+  // L’édition en cours est fermée, puis le compteur version augmente. Comme ce compteur est surveillé par
+  // useEffect(), React relance le chargement des lignes.
   function reloadRows() {
     setEditing(null);
     setLoading(true);
     setVersion((previous) => previous + 1);
   }
   // Affiche le résultat de l’action puis recharge les lignes depuis la base.
+  // Le message reçu du serveur est conservé pour l’affichage. reloadRows() ferme ensuite l’éditeur et récupère les
+  // valeurs réellement enregistrées dans la base.
   function rowChanged(data) {
     setSuccess(data.message);
     reloadRows();

@@ -4,6 +4,9 @@
 final class RestoreService
 {
     // Crée une nouvelle base MySQL puis y importe la sauvegarde sans écraser une base existante.
+    // La fonction reçoit la base d’origine, le fichier et le nom de destination. CREATE DATABASE refuse d’écraser
+    // une base existante. Le client mysql importe ensuite le SQL ; en cas d’échec, la nouvelle base peut être
+    // incomplète.
     public static function restore(
         string $database,
         string $filename,

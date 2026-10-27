@@ -7,6 +7,8 @@ final class SchemaService
     public string $qualified;
     public array $tableInfo;
     // Vérifie les noms, ouvre la connexion et récupère les informations de la table.
+    // Les noms de base et de table sont vérifiés avant la connexion. La requête consulte information_schema, le
+    // catalogue de MySQL. Si la table n’existe pas, une erreur 404 arrête la demande.
     public function __construct(public string $database, public string $table)
     {
         SqlValidation::database($database);
@@ -23,6 +25,8 @@ final class SchemaService
         }
     }
     // Lit la description des colonnes dans le catalogue interne de MySQL.
+    // La requête lit les noms, les types et les attributs des colonnes. ORDER BY conserve leur ordre réel dans la
+    // table. fetchAll() renvoie un tableau contenant toutes leurs descriptions.
     public function columns(): array
     {
         $statement = $this->pdo->prepare(
@@ -35,6 +39,8 @@ final class SchemaService
         return $statement->fetchAll();
     }
     // Cherche une colonne par son nom et renvoie une erreur si elle est introuvable.
+    // La fonction reçoit un nom, le vérifie puis parcourt les colonnes de la table. Elle renvoie la description
+    // correspondante ou une erreur 404 si le nom est absent.
     public function column(string $name): array
     {
         SqlValidation::name($name);
@@ -46,6 +52,8 @@ final class SchemaService
         throw new HttpError('Colonne introuvable.', 404);
     }
     // Refuse les modifications sur une vue, qui reste consultable seulement.
+    // Une vue présente le résultat d’une requête plutôt qu’une table ordinaire. Cette vérification bloque les
+    // actions de modification sur les vues pour les laisser en lecture seule.
     public function requireTable(): void
     {
         if ($this->tableInfo['TABLE_TYPE'] !== 'BASE TABLE') {
@@ -53,6 +61,9 @@ final class SchemaService
         }
     }
     // Trouve les colonnes qui identifient une ligne et explique les éventuelles limites de modification.
+    // La clé primaire peut contenir une ou plusieurs colonnes. La fonction les retrouve et contrôle si leurs types
+    // et le moteur permettent les actions prévues. Elle renvoie la clé et une explication si les actions doivent
+    // être bloquées.
     public function primaryKey(): array
     {
         $statement = $this->pdo->prepare(
@@ -84,6 +95,8 @@ final class SchemaService
         return ['primaryKey' => $primaryKey, 'actionDisabledReason' => $reason];
     }
     // Vérifie que toutes les valeurs nécessaires pour identifier une ligne ont été fournies.
+    // La fonction attend toutes les colonnes de la clé primaire, sans colonne supplémentaire. Elle vérifie aussi le
+    // type de chaque valeur. La clé renvoyée permet ensuite de viser la bonne ligne.
     public function validateKey(mixed $key): array
     {
         $metadata = $this->primaryKey();

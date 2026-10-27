@@ -5,6 +5,8 @@ import DatabaseExplorer from "./DatabaseExplorer";
 import CreateDatabase from "./CreateDatabase";
 import Feedback from "./Feedback";
 // Garde la base sélectionnée et affiche le menu et l’explorateur MySQL.
+// Les états gardent la liste des bases et le nom sélectionné. createPortal() place le menu des bases dans la
+// barre de gauche tout en gardant sa logique dans ce composant.
 export default function MysqlView({ menuTarget }) {
   const [databases, setDatabases] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,6 +14,8 @@ export default function MysqlView({ menuTarget }) {
   const [selectedDatabase, setSelectedDatabase] = useState("");
   const [success, setSuccess] = useState("");
   // Récupère les bases auprès du serveur et met à jour la liste affichée.
+  // La demande GET lit la liste depuis l’API. setDatabases() garde les noms reçus. Le catch garde le message
+  // d’erreur et le finally termine le chargement, même si la demande échoue.
   async function loadDatabases() {
     setLoading(true);
     setError("");
@@ -29,11 +33,15 @@ export default function MysqlView({ menuTarget }) {
     loadDatabases();
   }, []);
   // Mémorise la base choisie et efface le message de réussite précédent.
+  // Le nom reçu est mémorisé dans selectedDatabase. React affiche alors l’explorateur de cette base. L’ancien
+  // message de réussite est effacé pour éviter de le confondre avec la nouvelle sélection.
   function selectDatabase(database) {
     setSelectedDatabase(database);
     setSuccess("");
   }
   // Retire la base sélectionnée de l’écran et recharge les bases après la suppression.
+  // Cette fonction est appelée après une suppression réussie. Elle retire la sélection, affiche le message du
+  // serveur et demande une nouvelle liste des bases.
   function databaseDeleted(data) {
     setSelectedDatabase("");
     setSuccess(data.message);

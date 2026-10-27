@@ -4,6 +4,8 @@
 final class PostgresDatabase
 {
     // Ouvre une connexion PostgreSQL avec les paramètres de l’environnement.
+    // getenv() récupère le serveur, le port, la base et le compte PostgreSQL. Le DSN rassemble la destination. new
+    // PDO() renvoie la connexion que les autres classes utiliseront pour leurs requêtes.
     public static function connect(): PDO
     {
         $host = getenv('PG_HOST') ?: 'postgres';

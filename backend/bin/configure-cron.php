@@ -16,6 +16,7 @@ $database = getenv('BACKUP_DATABASE') ?: 'atelier_theoa';
 SqlValidation::database($database);
 
 // Le script privé transmet les paramètres de connexion aux tâches cron.
+// umask limite les permissions des fichiers créés pour protéger les paramètres de connexion.
 umask(0077);
 
 $script = "#!/bin/sh\n";
@@ -44,6 +45,7 @@ if (file_put_contents('/run/safebase-backup.sh', $script) === false) {
     throw new RuntimeException('Impossible de préparer le script cron.');
 }
 
+// 0700 réserve la lecture, l’écriture et l’exécution de ce script à son propriétaire.
 chmod('/run/safebase-backup.sh', 0700);
 
 // Le verrou empêche deux sauvegardes automatiques de se chevaucher.

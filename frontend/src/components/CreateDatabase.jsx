@@ -2,6 +2,8 @@ import { useState } from "react";
 import { request } from "../services/api";
 import Feedback from "./Feedback";
 // Affiche le formulaire de création MySQL seulement quand on ouvre cette partie.
+// open garde le formulaire fermé au départ. name contient le nom saisi et onCreated permet au parent
+// d’actualiser les bases. Les messages indiquent si la demande a réussi ou échoué.
 function CreateDatabase({ onCreated }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -9,6 +11,8 @@ function CreateDatabase({ onCreated }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   // Crée la base demandée, vide le champ et recharge la liste après une réussite.
+  // Le nom saisi est envoyé avec POST. Après réussite, le champ est vidé, le message est affiché et onCreated()
+  // recharge les bases. Si la demande échoue, le nom reste saisi et le catch affiche l’erreur.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

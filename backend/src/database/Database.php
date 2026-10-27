@@ -5,6 +5,8 @@ declare(strict_types=1);
 final class Database
 {
     // Ouvre une connexion MySQL avec les paramètres de l’environnement, lus par PHP.
+    // getenv() lit les paramètres transmis au conteneur. Le DSN indique le serveur et le port. new PDO() ouvre la
+    // connexion et les options demandent des erreurs explicites et des résultats sous forme de tableaux.
     public static function connect(): PDO
     {
         $host = getenv('DB_HOST') ?: 'mysql';

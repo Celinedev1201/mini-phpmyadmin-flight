@@ -4,6 +4,8 @@
 final class HttpError extends RuntimeException
 {
     // Crée une erreur avec un message lisible et le code HTTP à renvoyer au navigateur.
+    // Le message explique le problème à l’utilisateur. Le code HTTP indique au navigateur si la demande est
+    // invalide, interdite ou impossible.
     public function __construct(string $message, public int $status = 400)
     {
         parent::__construct($message);
@@ -13,6 +15,8 @@ final class HttpError extends RuntimeException
 final class Api
 {
     // Lit les données JSON envoyées par le formulaire et refuse un format incorrect.
+    // getBody() récupère le texte envoyé par le navigateur. json_decode() le transforme en tableau PHP. Un JSON
+    // invalide ou une liste à la place d’un objet provoque une erreur.
     public static function body(): array
     {
         try {
@@ -28,6 +32,8 @@ final class Api
 
     // Les détails SQL restent côté serveur ; aucun secret ne rejoint la réponse.
     // Exécute l’action demandée et transforme son résultat ou son erreur en réponse JSON.
+    // La fonction reçue dans action réalise le travail. Flight::json() envoie son résultat au navigateur. Les catch
+    // remplacent les erreurs techniques par des messages lisibles sans révéler les détails SQL.
     public static function run(callable $action, int $status = 200): void
     {
         try {

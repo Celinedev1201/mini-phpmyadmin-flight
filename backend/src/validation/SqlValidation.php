@@ -8,11 +8,15 @@ final class SqlValidation
         'DECIMAL' => 'DECIMAL(10,2)', 'DATE' => 'DATE',
     ];
     // Renvoie vrai si le nom respecte les caractères et la longueur autorisés.
+    // preg_match() compare le nom au format autorisé : une lettre au début, puis lettres, chiffres ou underscores,
+    // avec 64 caractères maximum. La fonction renvoie seulement true ou false.
     public static function validName(mixed $name): bool
     {
         return is_string($name) && preg_match('/^[a-zA-Z][a-zA-Z0-9_]{0,63}$/D', $name) === 1;
     }
     // Renvoie le nom vérifié ou arrête la demande avec un message d’erreur.
+    // validName() effectue le contrôle. Si le nom est refusé, HttpError interrompt la demande avec une explication.
+    // Sinon le nom est renvoyé tel quel.
     public static function name(mixed $name): string
     {
         if (!self::validName($name)) {
@@ -21,6 +25,8 @@ final class SqlValidation
         return $name;
     }
     // Vérifie le nom et empêche les actions sur les bases internes de MySQL.
+    // name() vérifie d’abord le format. La comparaison en minuscules bloque ensuite les bases internes comme mysql
+    // ou information_schema, même si leur nom est écrit en majuscules.
     public static function database(mixed $name): string
     {
         self::name($name);
@@ -30,6 +36,8 @@ final class SqlValidation
         return $name;
     }
     // Transforme le choix du formulaire en un type SQL autorisé par l’application.
+    // Le formulaire envoie un choix comme VARCHAR ou INT. La constante TYPES le traduit en définition SQL connue,
+    // comme VARCHAR(255). Un choix absent de cette liste est refusé.
     public static function type(mixed $type): string
     {
         if (!is_string($type) || !isset(self::TYPES[$type])) {
@@ -38,6 +46,8 @@ final class SqlValidation
         return self::TYPES[$type];
     }
     // Vérifie la confirmation et, si nécessaire, le nom exact recopié avant une suppression.
+    // La valeur confirmed doit être exactement true. Si explicitName est activé, le nom recopié doit aussi être
+    // identique au nom attendu. Sans ces conditions, la suppression est arrêtée.
     public static function confirmed(array $data, string $name, bool $explicitName = false): void
     {
         if (($data['confirmed'] ?? null) !== true) {
@@ -50,6 +60,8 @@ final class SqlValidation
 
     // Vérifie que les valeurs visent des colonnes existantes et modifiables.
     // Vérifie que les valeurs reçues concernent seulement des colonnes existantes et modifiables.
+    // La description de la table permet de connaître les colonnes modifiables. Les colonnes calculées sont exclues,
+    // comme les identifiants automatiques lors d’un ajout. Chaque valeur reçue est contrôlée avant d’être renvoyée.
     public static function rowValues(SchemaService $schema, mixed $values, bool $inserting): array
     {
         if (!is_array($values) || $values === []) {

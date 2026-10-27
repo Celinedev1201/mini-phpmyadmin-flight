@@ -9,6 +9,9 @@
 final class ConnectionTest
 {
     // Vérifie les informations reçues puis essaie une connexion et une requête sans modifier les données.
+    // Le tableau reçu contient le moteur, le serveur, le port et les identifiants. Après validation, PDO ouvre une
+    // connexion et SELECT 1 vérifie qu’elle répond. Le catch renvoie un message lisible sans enregistrer la
+    // connexion.
     public static function test(array $data): array
     {
         $engine = $data['engine'] ?? '';

@@ -2,12 +2,16 @@ import { useState } from "react";
 import { request, tablePath, columnTypes } from "../services/api";
 import Feedback from "./Feedback";
 // Affiche le formulaire qui ajoute une colonne à la table choisie.
+// database et table indiquent où ajouter la colonne. Les états gardent son nom et le type choisi. onCreated
+// permet au parent de relire la structure quand le serveur a terminé.
 function AddColumn({ database, table, onCreated }) {
   const [name, setName] = useState("");
   const [type, setType] = useState("VARCHAR");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   // Envoie le nom et le type de la nouvelle colonne, puis demande de rafraîchir la structure.
+  // preventDefault() évite le rechargement de la page. Le nom et le type partent dans une demande POST. Après
+  // réussite, onCreated() prévient le parent de recharger les colonnes. Le catch garde le message en cas d’erreur.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

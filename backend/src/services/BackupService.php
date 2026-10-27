@@ -3,8 +3,11 @@
 // Produit les dumps MySQL dans le dossier partagé avec l’ordinateur.
 final class BackupService
 {
+    // /var/backups/safebase est le dossier de sauvegardes partagé avec l’ordinateur par Docker.
     private const ROOT = '/var/backups/safebase/mysql';
     // Exporte la base MySQL dans un fichier temporaire puis publie la sauvegarde complète.
+    // mysqldump exporte la base dans un fichier .partial. proc_open() lance cet outil et proc_close() récupère son
+    // code de sortie. Seul un fichier non vide produit sans erreur est renommé en .sql et proposé dans l’historique.
     public static function create(string $database): array
     {
         SqlValidation::database($database);
