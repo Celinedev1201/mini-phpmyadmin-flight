@@ -3,18 +3,19 @@ import { request } from "../services/api";
 import Feedback from "./Feedback";
 
 // Une question sous le bouton suffit pour confirmer la suppression.
+// Demande une confirmation avant de supprimer la ressource reçue dans les paramètres.
 function DeleteButton({ path, target, explicitName = false, body = {}, onDeleted, disabled }) {
   const [confirming, setConfirming] = useState(false);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  // Ouvre la confirmation avec un champ et un message d’erreur remis à zéro.
   function askConfirmation() {
     setName("");
     setError("");
     setConfirming(true);
   }
-
+  // Envoie la suppression confirmée, avec le nom recopié quand il est obligatoire.
   async function handleDelete() {
     if (loading || (explicitName && name !== target)) return;
     setLoading(true);

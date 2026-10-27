@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { request, databasePath } from "../services/api";
 import Feedback from "./Feedback";
-
+// Affiche le bouton de sauvegarde de la base MySQL et le résultat de la demande.
 function CreateBackup({ database, onCreated }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  // Demande une sauvegarde au serveur et avertit le parent pour actualiser l’historique.
   async function handleBackup() {
     if (loading) return;
 

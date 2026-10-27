@@ -2,12 +2,13 @@ import { useState } from "react";
 import { request, tablePath } from "../services/api";
 import Feedback from "./Feedback";
 import DeleteButton from "./DeleteButton";
-
+// Permet de renommer la table ou de demander sa suppression.
 export default function TableActions({ database, table, onChanged }) {
   const [name, setName] = useState(table);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const path = tablePath(database, table);
+  // Envoie le nouveau nom de la table et avertit le parent pour actualiser la sélection.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

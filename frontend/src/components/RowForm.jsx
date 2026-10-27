@@ -3,12 +3,14 @@ import { request, tablePath } from "../services/api";
 import Feedback from "./Feedback";
 
 // Le même formulaire sert à ajouter une ligne ou à modifier la ligne reçue.
+// Affiche les champs pour ajouter une ligne ou modifier les valeurs d’une ligne existante.
 function RowForm({ database, table, columns, row, rowKey, onSaved, onCancel }) {
   const editing = Boolean(row);
   const [values, setValues] = useState(row || {});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  // Les colonnes calculées restent gérées par MySQL, comme les nouveaux identifiants automatiques.
   const editableColumns = columns.filter((column) => {
     if (column.GENERATION_EXPRESSION) return false;
     return editing || !column.EXTRA.includes("auto_increment");
@@ -20,11 +22,11 @@ function RowForm({ database, table, columns, row, rowKey, onSaved, onCancel }) {
     const name = column.COLUMN_NAME;
     if (editing && values[name] !== row[name]) changedValues[name] = values[name];
   }
-
+  // Met à jour un seul champ de la ligne en conservant les autres valeurs.
   function changeValue(name, value) {
     setValues((previous) => ({ ...previous, [name]: value }));
   }
-
+  // Ajoute une ligne ou enregistre les champs modifiés en utilisant sa clé d’origine.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

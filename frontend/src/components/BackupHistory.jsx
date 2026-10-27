@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { request, databasePath } from "../services/api";
 import Feedback from "./Feedback";
 import RestoreBackup from "./RestoreBackup";
-
+// Affiche les sauvegardes de la base avec les actions de téléchargement et de restauration.
 function BackupHistory({ database, refreshKey, onRestored, engine = "mysql" }) {
   const [backups, setBackups] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,10 +13,10 @@ function BackupHistory({ database, refreshKey, onRestored, engine = "mysql" }) {
     engine === "postgres"
       ? `/api/postgres/databases/${encodeURIComponent(database)}/backups`
       : `${databasePath(database)}/backups`;
-
+  // Relance le chargement quand les valeurs entre crochets changent.
   useEffect(() => {
     const controller = new AbortController();
-
+    // Récupère l’historique des sauvegardes et ignore la réponse si la demande a été annulée.
     async function loadBackups() {
       setLoading(true);
       setError("");

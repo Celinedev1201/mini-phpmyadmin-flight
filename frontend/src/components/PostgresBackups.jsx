@@ -4,7 +4,7 @@ import Feedback from "./Feedback";
 import BackupHistory from "./BackupHistory";
 import PostgresBackupForm from "./PostgresBackupForm";
 import DeleteButton from "./DeleteButton";
-
+// Rassemble les bases PostgreSQL, leurs sauvegardes et les actions disponibles.
 function PostgresBackups() {
   const [databases, setDatabases] = useState([]);
   const [database, setDatabase] = useState("");
@@ -13,12 +13,12 @@ function PostgresBackups() {
   const [success, setSuccess] = useState("");
   const [backupsVersion, setBackupsVersion] = useState(0);
   const [databasesVersion, setDatabasesVersion] = useState(0);
-
+  // Relance le chargement quand les valeurs entre crochets changent.
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
     setError("");
-
+    // Récupère les bases auprès du serveur et met à jour la liste affichée.
     async function loadDatabases() {
       try {
         const data = await request("/api/postgres/databases", {

@@ -7,12 +7,12 @@ final class SqlValidation
         'VARCHAR' => 'VARCHAR(255)', 'TEXT' => 'TEXT', 'INT' => 'INT',
         'DECIMAL' => 'DECIMAL(10,2)', 'DATE' => 'DATE',
     ];
-
+    // Renvoie vrai si le nom respecte les caractères et la longueur autorisés.
     public static function validName(mixed $name): bool
     {
         return is_string($name) && preg_match('/^[a-zA-Z][a-zA-Z0-9_]{0,63}$/D', $name) === 1;
     }
-
+    // Renvoie le nom vérifié ou arrête la demande avec un message d’erreur.
     public static function name(mixed $name): string
     {
         if (!self::validName($name)) {
@@ -20,7 +20,7 @@ final class SqlValidation
         }
         return $name;
     }
-
+    // Vérifie le nom et empêche les actions sur les bases internes de MySQL.
     public static function database(mixed $name): string
     {
         self::name($name);
@@ -29,7 +29,7 @@ final class SqlValidation
         }
         return $name;
     }
-
+    // Transforme le choix du formulaire en un type SQL autorisé par l’application.
     public static function type(mixed $type): string
     {
         if (!is_string($type) || !isset(self::TYPES[$type])) {
@@ -37,7 +37,7 @@ final class SqlValidation
         }
         return self::TYPES[$type];
     }
-
+    // Vérifie la confirmation et, si nécessaire, le nom exact recopié avant une suppression.
     public static function confirmed(array $data, string $name, bool $explicitName = false): void
     {
         if (($data['confirmed'] ?? null) !== true) {
@@ -49,6 +49,7 @@ final class SqlValidation
     }
 
     // Vérifie que les valeurs visent des colonnes existantes et modifiables.
+    // Vérifie que les valeurs reçues concernent seulement des colonnes existantes et modifiables.
     public static function rowValues(SchemaService $schema, mixed $values, bool $inserting): array
     {
         if (!is_array($values) || $values === []) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 final class Database
 {
+    // Ouvre une connexion MySQL avec les paramètres de l’environnement, lus par PHP.
     public static function connect(): PDO
     {
         $host = getenv('DB_HOST') ?: 'mysql';

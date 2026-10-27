@@ -6,7 +6,7 @@ final class SchemaService
     public PDO $pdo;
     public string $qualified;
     public array $tableInfo;
-
+    // Vérifie les noms, ouvre la connexion et récupère les informations de la table.
     public function __construct(public string $database, public string $table)
     {
         SqlValidation::database($database);
@@ -22,7 +22,7 @@ final class SchemaService
             throw new HttpError('Table introuvable.', 404);
         }
     }
-
+    // Lit la description des colonnes dans le catalogue interne de MySQL.
     public function columns(): array
     {
         $statement = $this->pdo->prepare(
@@ -34,7 +34,7 @@ final class SchemaService
         $statement->execute([$this->database, $this->table]);
         return $statement->fetchAll();
     }
-
+    // Cherche une colonne par son nom et renvoie une erreur si elle est introuvable.
     public function column(string $name): array
     {
         SqlValidation::name($name);
@@ -45,14 +45,14 @@ final class SchemaService
         }
         throw new HttpError('Colonne introuvable.', 404);
     }
-
+    // Refuse les modifications sur une vue, qui reste consultable seulement.
     public function requireTable(): void
     {
         if ($this->tableInfo['TABLE_TYPE'] !== 'BASE TABLE') {
             throw new HttpError('Les vues sont consultables uniquement.', 403);
         }
     }
-
+    // Trouve les colonnes qui identifient une ligne et explique les éventuelles limites de modification.
     public function primaryKey(): array
     {
         $statement = $this->pdo->prepare(
@@ -83,7 +83,7 @@ final class SchemaService
         }
         return ['primaryKey' => $primaryKey, 'actionDisabledReason' => $reason];
     }
-
+    // Vérifie que toutes les valeurs nécessaires pour identifier une ligne ont été fournies.
     public function validateKey(mixed $key): array
     {
         $metadata = $this->primaryKey();

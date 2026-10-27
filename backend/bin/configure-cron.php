@@ -47,6 +47,7 @@ if (file_put_contents('/run/safebase-backup.sh', $script) === false) {
 chmod('/run/safebase-backup.sh', 0700);
 
 // Le verrou empêche deux sauvegardes automatiques de se chevaucher.
+// Les cinq valeurs indiquent une exécution chaque jour à 12 h, selon l’heure du conteneur.
 $job = "0 12 * * * root /usr/bin/flock -n /run/safebase-backup.lock ";
 $job .= "/run/safebase-backup.sh ";
 $job .= ">> /var/backups/safebase/cron.log 2>&1\n";

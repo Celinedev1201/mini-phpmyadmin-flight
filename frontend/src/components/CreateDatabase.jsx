@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { request } from "../services/api";
 import Feedback from "./Feedback";
-
+// Affiche le formulaire de création MySQL seulement quand on ouvre cette partie.
 function CreateDatabase({ onCreated }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  // Crée la base demandée, vide le champ et recharge la liste après une réussite.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

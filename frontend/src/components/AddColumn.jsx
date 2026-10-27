@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { request, tablePath, columnTypes } from "../services/api";
 import Feedback from "./Feedback";
-
+// Affiche le formulaire qui ajoute une colonne à la table choisie.
 function AddColumn({ database, table, onCreated }) {
   const [name, setName] = useState("");
   const [type, setType] = useState("VARCHAR");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // Envoie le nom et le type de la nouvelle colonne, puis demande de rafraîchir la structure.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

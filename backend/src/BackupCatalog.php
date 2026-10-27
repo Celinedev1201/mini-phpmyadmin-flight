@@ -4,7 +4,7 @@
 final class BackupCatalog
 {
     private const ROOT = '/var/backups/safebase/mysql';
-
+    // Lit les fichiers de sauvegarde MySQL et les classe du plus récent au plus ancien.
     public static function list(string $database): array
     {
         SqlValidation::database($database);
@@ -35,6 +35,7 @@ final class BackupCatalog
     }
 
     // Vérifie le nom du fichier et retrouve la sauvegarde demandée.
+// Vérifie le nom et l’existence du fichier avant de renvoyer son chemin pour le téléchargement.
 public static function downloadPath(string $database, string $filename): string
 {
     SqlValidation::database($database);

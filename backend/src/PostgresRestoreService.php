@@ -4,6 +4,7 @@
 
 final class PostgresRestoreService
 {
+    // Crée une nouvelle base PostgreSQL puis y importe la sauvegarde en une seule transaction.
     public static function restore(
         string $database,
         string $filename,

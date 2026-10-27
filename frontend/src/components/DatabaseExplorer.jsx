@@ -6,7 +6,7 @@ import TableStructure from "./TableStructure";
 import Feedback from "./Feedback";
 import CreateBackup from "./CreateBackup";
 import BackupHistory from "./BackupHistory";
-
+// Rassemble les tables, les sauvegardes et les actions de la base MySQL choisie.
 function DatabaseExplorer({ database, onDeleted, onRestored }) {
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState("");
@@ -14,7 +14,7 @@ function DatabaseExplorer({ database, onDeleted, onRestored }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [backupsVersion, setBackupsVersion] = useState(0);
-
+  // Charge les tables de la base et retire la sélection si la table n’existe plus.
   async function loadTables() {
     setLoading(true);
     setError("");
@@ -31,11 +31,11 @@ function DatabaseExplorer({ database, onDeleted, onRestored }) {
       setLoading(false);
     }
   }
-
+  // Relance le chargement quand les valeurs entre crochets changent.
   useEffect(() => {
     loadTables();
   }, [database]);
-
+  // Met à jour la sélection après une modification de table puis recharge la liste.
   function tableChanged(data) {
     setSelectedTable(data.name || "");
     setSuccess(data.message);

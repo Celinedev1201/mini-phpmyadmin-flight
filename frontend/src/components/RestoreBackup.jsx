@@ -1,7 +1,7 @@
 import { useId, useState } from "react";
 import { request, databasePath } from "../services/api";
 import Feedback from "./Feedback";
-
+// Ouvre un formulaire pour restaurer le fichier choisi dans une nouvelle base.
 function RestoreBackup({ database, filename, onRestored, engine = "mysql" }) {
   const id = useId();
   const [open, setOpen] = useState(false);
@@ -9,9 +9,10 @@ function RestoreBackup({ database, filename, onRestored, engine = "mysql" }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  // Envoie le fichier choisi et le nom de la nouvelle base au moteur concerné.
   async function handleSubmit(event) {
     event.preventDefault();
+    // Ignore un deuxième clic pendant que le serveur traite déjà la restauration.
     if (loading) return;
 
     setLoading(true);

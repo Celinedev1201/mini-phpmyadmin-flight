@@ -3,7 +3,7 @@ import { request, tablePath } from "../services/api";
 import Feedback from "./Feedback";
 import DeleteButton from "./DeleteButton";
 import RowForm from "./RowForm";
-
+// Affiche au maximum 50 lignes et prépare les actions sur la ligne choisie.
 function TableRows({ database, table, columns, refreshKey }) {
   const [rows, setRows] = useState([]);
   const [primaryKey, setPrimaryKey] = useState([]);
@@ -14,9 +14,10 @@ function TableRows({ database, table, columns, refreshKey }) {
   const [editing, setEditing] = useState(null);
   const [version, setVersion] = useState(0);
   const path = `${tablePath(database, table)}/rows`;
-
+  // Relance le chargement quand les valeurs entre crochets changent.
   useEffect(() => {
     let active = true;
+    // Charge les lignes et les informations qui permettent de les modifier ou de les supprimer.
     async function loadRows() {
       setLoading(true);
       setError("");
@@ -37,13 +38,13 @@ function TableRows({ database, table, columns, refreshKey }) {
     loadRows();
     return () => { active = false; };
   }, [path, refreshKey, version]);
-
+  // Ferme l’édition et change le compteur pour déclencher un nouveau chargement des lignes.
   function reloadRows() {
     setEditing(null);
     setLoading(true);
     setVersion((previous) => previous + 1);
   }
-
+  // Affiche le résultat de l’action puis recharge les lignes depuis la base.
   function rowChanged(data) {
     setSuccess(data.message);
     reloadRows();
@@ -69,6 +70,7 @@ function TableRows({ database, table, columns, refreshKey }) {
           </thead>
           <tbody>
             {rows.map(({ row, renderKey }) => {
+              // Cette clé contient les valeurs SQL qui identifient exactement la ligne à modifier.
               const rowKey = {};
               for (const name of primaryKey) rowKey[name] = row[name];
               return (

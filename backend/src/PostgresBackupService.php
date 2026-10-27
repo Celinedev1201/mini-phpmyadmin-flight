@@ -4,7 +4,7 @@
 final class PostgresBackupService
 {
     private const ROOT = '/var/backups/safebase/postgres';
-
+    // Exporte la base PostgreSQL avec pg_dump et conserve seulement une sauvegarde terminée.
     public static function create(string $database): array
     {
         PostgresValidation::database($database);

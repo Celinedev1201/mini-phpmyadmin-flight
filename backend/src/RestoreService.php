@@ -3,6 +3,7 @@
 // Restaure un dump dans une nouvelle base pour préserver l’originale.
 final class RestoreService
 {
+    // Crée une nouvelle base MySQL puis y importe la sauvegarde sans écraser une base existante.
     public static function restore(
         string $database,
         string $filename,

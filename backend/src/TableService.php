@@ -2,6 +2,7 @@
 
 final class TableService
 {
+    // Vérifie que la base existe puis renvoie les noms de ses tables et de ses vues.
     public static function list(string $database): array
     {
         SqlValidation::database($database);
@@ -17,7 +18,7 @@ final class TableService
         $statement->execute([$database]);
         return ['database' => $database, 'tables' => $statement->fetchAll(PDO::FETCH_COLUMN)];
     }
-
+    // Crée une table avec une colonne id qui numérote automatiquement les nouvelles lignes.
     public static function create(string $database, array $data): array
     {
         SqlValidation::database($database);
@@ -27,7 +28,7 @@ final class TableService
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         return ['message' => 'Table créée avec succès', 'name' => $name];
     }
-
+    // Vérifie que la table est modifiable puis lui donne le nouveau nom demandé.
     public static function rename(string $database, string $table, array $data): array
     {
         $schema = new SchemaService($database, $table);
@@ -36,7 +37,7 @@ final class TableService
         $schema->pdo->exec("RENAME TABLE {$schema->qualified} TO `$database`.`$name`");
         return ['message' => 'Table renommée avec succès', 'name' => $name];
     }
-
+    // Supprime la table après avoir vérifié son existence et la confirmation reçue.
     public static function delete(string $database, string $table, array $data): array
     {
         $schema = new SchemaService($database, $table);

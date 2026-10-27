@@ -8,11 +8,13 @@ const views = [
   { id: "mysql", label: "MySQL", Component: MysqlView },
   { id: "postgres", label: "PostgreSQL", Component: PostgresBackups },
 ];
-
+// Affiche le menu et garde en mémoire la vue ouverte pour retrouver ses sélections.
 export default function App() {
   const [connectionOpen, setConnectionOpen] = useState(false);
   const [active, setActive] = useState("connections");
+  // Les vues déjà ouvertes restent montées : leurs sélections ne sont pas perdues.
   const [visited, setVisited] = useState(["connections"]);
+  // Change la vue visible sans effacer les vues déjà ouvertes.
   function navigate(id) {
     setActive(id);
     setVisited((current) => current.includes(id) ? current : [...current, id]);

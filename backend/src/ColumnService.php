@@ -3,12 +3,12 @@
 final class ColumnService
 {
     private SchemaService $schema;
-
+    // Prépare les informations de la table utilisées par les actions sur ses colonnes.
     public function __construct(string $database, string $table)
     {
         $this->schema = new SchemaService($database, $table);
     }
-
+    // Renvoie les colonnes et précise si leur type peut être modifié par l’application.
     public function list(): array
     {
         $columns = $this->schema->columns();
@@ -17,7 +17,7 @@ final class ColumnService
         }
         return ['columns' => $columns, 'isTable' => $this->schema->tableInfo['TABLE_TYPE'] === 'BASE TABLE'];
     }
-
+    // Vérifie le nom et le type puis ajoute une colonne qui accepte les valeurs NULL.
     public function create(array $data): array
     {
         $this->schema->requireTable();
@@ -26,7 +26,7 @@ final class ColumnService
         $this->schema->pdo->exec("ALTER TABLE {$this->schema->qualified} ADD COLUMN `$name` $type NULL");
         return ['message' => 'Colonne ajoutée avec succès'];
     }
-
+    // Renomme la colonne et change son type si un nouveau type a été choisi.
     public function update(string $column, array $data): array
     {
         $this->schema->requireTable();
@@ -46,7 +46,7 @@ final class ColumnService
         }
         return ['message' => 'Colonne modifiée avec succès'];
     }
-
+    // Vérifie la colonne et la confirmation puis supprime cette colonne de la table.
     public function delete(string $column, array $data): array
     {
         $this->schema->requireTable();
@@ -55,7 +55,7 @@ final class ColumnService
         $this->schema->pdo->exec("ALTER TABLE {$this->schema->qualified} DROP COLUMN `$column`");
         return ['message' => 'Colonne supprimée avec succès'];
     }
-
+    // Explique pourquoi un type ou un attribut particulier empêche le changement de type.
     private static function typeRestriction(array $column): string
     {
         if ($column['GENERATION_EXPRESSION'] !== '' || str_contains($column['COLUMN_TYPE'], 'zerofill')
@@ -65,7 +65,7 @@ final class ColumnService
         }
         return '';
     }
-
+    // Prépare le nouveau type SQL en conservant les attributs de la colonne pris en charge.
     private static function typeDefinition(PDO $pdo, array $column, string $type): string
     {
         if (self::typeRestriction($column) !== '') {

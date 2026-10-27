@@ -4,7 +4,7 @@
 final class PostgresBackupCatalog
 {
     private const ROOT = '/var/backups/safebase/postgres';
-
+    // Lit les sauvegardes PostgreSQL sur le disque et les classe par date décroissante.
     public static function list(string $database): array
     {
         PostgresValidation::database($database);
@@ -33,7 +33,7 @@ final class PostgresBackupCatalog
 
         return ['backups' => $backups];
     }
-
+    // Vérifie le fichier PostgreSQL demandé avant d’autoriser son téléchargement.
     public static function downloadPath(
         string $database,
         string $filename

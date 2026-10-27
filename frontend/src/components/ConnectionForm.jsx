@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { request } from "../services/api";
 import Feedback from "./Feedback";
-
+// Affiche les champs de connexion et permet de tester les informations sans les enregistrer.
 function ConnectionForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -16,7 +16,7 @@ function ConnectionForm() {
     username: "",
     password: "",
   });
-
+  // Recopie la valeur saisie dans le bon champ de la connexion.
   function handleChange(event) {
     const { name, value } = event.target;
     setConnection((previous) => ({
@@ -24,7 +24,7 @@ function ConnectionForm() {
       [name]: value,
     }));
   }
-
+  // Change le moteur et remet son port habituel : 3306 pour MySQL, 5432 pour PostgreSQL.
   function handleEngineChange(event) {
     const engine = event.target.value;
     setConnection((previous) => ({
@@ -33,7 +33,7 @@ function ConnectionForm() {
       port: engine === "mysql" ? "3306" : "5432",
     }));
   }
-
+  // Envoie les informations au test de connexion et affiche la réponse du serveur.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

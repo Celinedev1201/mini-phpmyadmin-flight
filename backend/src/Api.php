@@ -3,6 +3,7 @@
 // Une erreur métier possède un message affichable et un statut HTTP.
 final class HttpError extends RuntimeException
 {
+    // Crée une erreur avec un message lisible et le code HTTP à renvoyer au navigateur.
     public function __construct(string $message, public int $status = 400)
     {
         parent::__construct($message);
@@ -11,6 +12,7 @@ final class HttpError extends RuntimeException
 
 final class Api
 {
+    // Lit les données JSON envoyées par le formulaire et refuse un format incorrect.
     public static function body(): array
     {
         try {
@@ -25,6 +27,7 @@ final class Api
     }
 
     // Les détails SQL restent côté serveur ; aucun secret ne rejoint la réponse.
+    // Exécute l’action demandée et transforme son résultat ou son erreur en réponse JSON.
     public static function run(callable $action, int $status = 200): void
     {
         try {

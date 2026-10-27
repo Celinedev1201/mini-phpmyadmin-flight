@@ -31,4 +31,5 @@ require dirname(__DIR__) . '/src/routes/backups.php';
 require dirname(__DIR__) . '/src/routes/postgres.php';
 require dirname(__DIR__) . '/src/routes/connections.php';
 
+// Démarre Flight : il choisit la route correspondant à l’adresse et à l’action reçues.
 Flight::start();

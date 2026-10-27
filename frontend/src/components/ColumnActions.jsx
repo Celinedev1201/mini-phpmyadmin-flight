@@ -2,7 +2,7 @@ import { useState } from "react";
 import { request, tablePath, columnTypes } from "../services/api";
 import DeleteButton from "./DeleteButton";
 import Feedback from "./Feedback";
-
+// Permet de renommer une colonne, de changer son type ou de demander sa suppression.
 export default function ColumnActions({ column, database, table, disabled, onChanged }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(column.COLUMN_NAME);
@@ -10,13 +10,14 @@ export default function ColumnActions({ column, database, table, disabled, onCha
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const path = `${tablePath(database, table)}/columns/${encodeURIComponent(column.COLUMN_NAME)}`;
+  // Prépare les valeurs actuelles de la colonne avant d’ouvrir son formulaire.
   function openEditor() {
     setName(column.COLUMN_NAME);
     setType("");
     setError("");
     setEditing(true);
   }
-
+  // Enregistre le nom et le type choisis, puis ferme l’éditeur si la demande réussit.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

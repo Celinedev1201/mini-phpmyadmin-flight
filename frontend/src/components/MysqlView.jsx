@@ -3,12 +3,14 @@ import { request } from "../services/api";
 import DatabaseExplorer from "./DatabaseExplorer";
 import CreateDatabase from "./CreateDatabase";
 import Feedback from "./Feedback";
+// Garde la base sélectionnée et affiche le menu et l’explorateur MySQL.
 export default function MysqlView() {
   const [databases, setDatabases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedDatabase, setSelectedDatabase] = useState("");
   const [success, setSuccess] = useState("");
+  // Récupère les bases auprès du serveur et met à jour la liste affichée.
   async function loadDatabases() {
     setLoading(true);
     setError("");
@@ -21,13 +23,16 @@ export default function MysqlView() {
       setLoading(false);
     }
   }
+  // Charge les bases à la première ouverture de la vue MySQL.
   useEffect(() => {
     loadDatabases();
   }, []);
+  // Mémorise la base choisie et efface le message de réussite précédent.
   function selectDatabase(database) {
     setSelectedDatabase(database);
     setSuccess("");
   }
+  // Retire la base sélectionnée de l’écran et recharge les bases après la suppression.
   function databaseDeleted(data) {
     setSelectedDatabase("");
     setSuccess(data.message);

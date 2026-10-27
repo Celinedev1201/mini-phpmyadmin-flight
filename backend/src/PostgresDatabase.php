@@ -3,6 +3,7 @@
 // Centralise la connexion PDO au serveur PostgreSQL.
 final class PostgresDatabase
 {
+    // Ouvre une connexion PostgreSQL avec les paramètres de l’environnement.
     public static function connect(): PDO
     {
         $host = getenv('PG_HOST') ?: 'postgres';

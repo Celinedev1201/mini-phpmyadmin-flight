@@ -8,6 +8,7 @@
 
 final class ConnectionTest
 {
+    // Vérifie les informations reçues puis essaie une connexion et une requête sans modifier les données.
     public static function test(array $data): array
     {
         $engine = $data['engine'] ?? '';
@@ -53,6 +54,7 @@ final class ConnectionTest
             throw new HttpError('Le port doit être compris entre 1 et 65535.');
         }
 
+        // Cette adresse indique à PDO quel moteur, serveur, port et base contacter.
         $dsn = $engine === 'mysql'
             ? "mysql:host=$host;port=$port;dbname=$database;charset=utf8mb4"
             : "pgsql:host=$host;port=$port;dbname=$database;connect_timeout=5";
@@ -63,6 +65,7 @@ final class ConnectionTest
                 PDO::ATTR_TIMEOUT => 5,
             ]);
 
+            // Cette petite requête vérifie que la connexion fonctionne sans changer de données.
             $pdo->query('SELECT 1');
         } catch (PDOException $exception) {
             error_log('Test de connexion refusé : SQLSTATE ' . $exception->getCode());

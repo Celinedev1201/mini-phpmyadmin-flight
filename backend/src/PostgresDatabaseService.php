@@ -3,6 +3,7 @@
 // Gère la suppression sans toucher aux sauvegardes conservées sur disque.
 final class PostgresDatabaseService
 {
+    // Vérifie les protections et la confirmation puis supprime la base sans effacer ses sauvegardes.
     public static function delete(string $database, array $data): array
     {
         PostgresValidation::database($database);

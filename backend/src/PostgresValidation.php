@@ -3,6 +3,7 @@
 // Valide les noms acceptés par notre application pour PostgreSQL.
 final class PostgresValidation
 {
+    // Vérifie le nom PostgreSQL et protège les bases internes et les bases modèles.
     public static function database(string $name): void
     {
         if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]{0,62}$/D', $name)) {

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { request } from "../services/api";
 import Feedback from "./Feedback";
-
+// Permet de choisir une base PostgreSQL puis de lancer sa sauvegarde.
 function PostgresBackupForm({ database, databases, loading, onSelect, onSaved }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  // Demande une sauvegarde au serveur et avertit le parent pour actualiser l’historique.
   async function handleBackup(event) {
     event.preventDefault();
     if (!database || saving) return;

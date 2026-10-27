@@ -13,6 +13,7 @@ require dirname(__DIR__) . '/src/BackupService.php';
 require dirname(__DIR__) . '/src/PostgresValidation.php';
 require dirname(__DIR__) . '/src/PostgresBackupService.php';
 
+// Les arguments sont le nom de la base puis le moteur, MySQL étant le choix par défaut.
 $database = $argv[1] ?? '';
 $engine = $argv[2] ?? 'mysql';
 

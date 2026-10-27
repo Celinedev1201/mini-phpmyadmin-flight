@@ -4,7 +4,7 @@
 final class BackupService
 {
     private const ROOT = '/var/backups/safebase/mysql';
-
+    // Exporte la base MySQL dans un fichier temporaire puis publie la sauvegarde complète.
     public static function create(string $database): array
     {
         SqlValidation::database($database);

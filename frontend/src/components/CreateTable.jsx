@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { request, databasePath } from "../services/api";
 import Feedback from "./Feedback";
-
+// Affiche le formulaire de création d’une table dans la base sélectionnée.
 function CreateTable({ database, onCreated }) {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  // Crée la table demandée et avertit le composant parent pour recharger la liste.
   async function handleSubmit(event) {
     event.preventDefault();
     if (loading) return;

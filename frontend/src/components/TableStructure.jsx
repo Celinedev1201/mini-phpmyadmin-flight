@@ -6,7 +6,7 @@ import RowForm from "./RowForm";
 import TableActions from "./TableActions";
 import TableRows from "./TableRows";
 import Feedback from "./Feedback";
-
+// Affiche les colonnes et rassemble les formulaires et les données de la table.
 function TableStructure({ database, table, onTableChanged }) {
   const [columns, setColumns] = useState([]);
   const [isTable, setIsTable] = useState(false);
@@ -15,7 +15,7 @@ function TableStructure({ database, table, onTableChanged }) {
   const [success, setSuccess] = useState("");
   const [structureVersion, setStructureVersion] = useState(0);
   const [rowsVersion, setRowsVersion] = useState(0);
-
+  // Charge les colonnes et vérifie si la sélection est une table modifiable ou une vue.
   async function loadColumns() {
     setLoading(true);
     setError("");
@@ -29,9 +29,9 @@ function TableStructure({ database, table, onTableChanged }) {
       setLoading(false);
     }
   }
-
+  // Relance le chargement quand les valeurs entre crochets changent.
   useEffect(() => { loadColumns(); }, [database, table]);
-
+  // Affiche le résultat et recharge la structure après un changement de colonne.
   function columnChanged(data) {
     setSuccess(data.message);
     // Reconstruit aussi les formulaires, car les noms et la clé peuvent changer.

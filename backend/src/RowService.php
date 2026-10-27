@@ -3,18 +3,18 @@
 final class RowService
 {
     private SchemaService $schema;
-
+    // Prépare les informations de la table pour les actions sur ses lignes.
     public function __construct(string $database, string $table)
     {
         $this->schema = new SchemaService($database, $table);
     }
-
+    // Lit au maximum 50 lignes et indique comment identifier chaque ligne.
     public function list(): array
     {
         $rows = $this->schema->pdo->query("SELECT * FROM {$this->schema->qualified} LIMIT 50")->fetchAll();
         return ['rows' => $rows, ...$this->schema->primaryKey()];
     }
-
+    // Vérifie les valeurs reçues puis ajoute une ligne avec une requête préparée.
     public function create(array $data): array
     {
         $this->schema->requireTable();
@@ -27,18 +27,19 @@ final class RowService
         $statement->execute(array_values($values));
         return ['message' => 'Ligne ajoutée avec succès', 'id' => $this->schema->pdo->lastInsertId()];
     }
-
+    // Demande la modification de la ligne identifiée par sa clé primaire.
     public function update(array $data): array
     {
         return $this->change($data, false);
     }
-
+    // Demande la suppression de la ligne identifiée par sa clé primaire.
     public function delete(array $data): array
     {
         return $this->change($data, true);
     }
 
     // La clé complète et la transaction limitent l’action à la ligne demandée.
+    // Modifie ou supprime une seule ligne, avec annulation si une étape échoue.
     private function change(array $data, bool $deleting): array
     {
         $key = $this->schema->validateKey($data['key'] ?? null);
@@ -50,6 +51,7 @@ final class RowService
         }
         $where = implode(' AND ', array_map(fn($name) => "`$name` = ?", array_keys($key)));
         $pdo = $this->schema->pdo;
+        // La transaction permet de tout annuler si la modification ne peut pas se terminer.
         $pdo->beginTransaction();
         try {
             $statement = $pdo->prepare("SELECT * FROM {$this->schema->qualified} WHERE $where FOR UPDATE");
