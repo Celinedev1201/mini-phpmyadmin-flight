@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { request, databasePath } from "../services/api";
 import Feedback from "./Feedback";
 
 function RestoreBackup({ database, filename, onRestored, engine = "mysql" }) {
+  const id = useId();
+  const [open, setOpen] = useState(false);
   const [target, setTarget] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -41,6 +43,12 @@ function RestoreBackup({ database, filename, onRestored, engine = "mysql" }) {
   }
 
   return (
+    <div className="disclosure">
+      <button type="button" className="action-button" aria-expanded={open}
+        aria-controls={id} onClick={() => setOpen((value) => !value)}>
+        {open ? "Fermer la restauration" : "Restaurer"}
+      </button>
+      <div id={id} hidden={!open}>
     <form className="restore-backup" onSubmit={handleSubmit}>
       <label>
         Restaurer dans une nouvelle base
@@ -70,6 +78,8 @@ function RestoreBackup({ database, filename, onRestored, engine = "mysql" }) {
 
       <Feedback error={error} success={success} />
     </form>
+      </div>
+    </div>
   );
 }
 

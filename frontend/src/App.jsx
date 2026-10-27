@@ -1,148 +1,81 @@
-import { useEffect, useState } from "react";
-import CreateDatabase from "./components/CreateDatabase";
-import DatabaseExplorer from "./components/DatabaseExplorer";
-import PostgresBackups from "./components/PostgresBackups";
-import Feedback from "./components/Feedback";
-import { request } from "./services/api";
+import { useState } from "react";
 import ConnectionForm from "./components/ConnectionForm";
+import MysqlView from "./components/MysqlView";
+import PostgresBackups from "./components/PostgresBackups";
 
-function App() {
-  const [databases, setDatabases] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [selectedDatabase, setSelectedDatabase] = useState("");
-  const [success, setSuccess] = useState("");
+const views = [
+  { id: "connections", label: "Connexions", Component: null },
+  { id: "mysql", label: "MySQL", Component: MysqlView },
+  { id: "postgres", label: "PostgreSQL", Component: PostgresBackups },
+];
 
-  async function loadDatabases() {
-    setLoading(true);
-    setError("");
-    try {
-      const data = await request("/api/databases");
-      setDatabases(data.databases);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
+export default function App() {
+  const [connectionOpen, setConnectionOpen] = useState(false);
+  const [active, setActive] = useState("connections");
+  const [visited, setVisited] = useState(["connections"]);
+  function navigate(id) {
+    setActive(id);
+    setVisited((current) => current.includes(id) ? current : [...current, id]);
   }
-
-  useEffect(() => {
-    loadDatabases();
-  }, []);
-
-  function selectDatabase(database) {
-    setSelectedDatabase(database);
-    setSuccess("");
-  }
-
-  function databaseDeleted(data) {
-    setSelectedDatabase("");
-    setSuccess(data.message);
-    loadDatabases();
-  }
-
   return (
     <div className="workspace">
       <aside className="sidebar">
         <div className="brand">
           <span className="eyebrow">L’atelier des données</span>
-          <h1>
-            Mini
-            <br />
-            phpMyAdmin<span>.</span>
-          </h1>
+          <h1>Mini<br />phpMyAdmin<span>.</span></h1>
           <p>par Théoa</p>
         </div>
-        <CreateDatabase onCreated={loadDatabases} />
-        <nav aria-label="Bases de données">
-          <div className="nav-heading">
-            <span>Bases de données</span>
-            <span className="count">{databases.length}</span>
-          </div>
-          <Feedback loading={loading} error={error} />
-          {error && (
-            <button className="database-button" onClick={loadDatabases}>
-              Réessayer
+        <nav aria-label="Vues SafeBase" className="view-navigation">
+          {views.map(({ id, label }) => (
+            <button key={id} type="button" id={`nav-${id}`}
+              className={`database-button${active === id ? " is-active" : ""}`}
+              aria-current={active === id ? "page" : undefined}
+              aria-controls={`view-${id}`} onClick={() => navigate(id)}>
+              <span className="database-name">{label}</span>
+              <span aria-hidden="true">↗</span>
             </button>
-          )}
-          <ul className="database-list">
-            {databases.map((database, index) => (
-              <li key={database}>
-                <button
-                  className={
-                    selectedDatabase === database
-                      ? "database-button is-active"
-                      : "database-button"
-                  }
-                  aria-current={
-                    selectedDatabase === database ? "true" : undefined
-                  }
-                  onClick={() => selectDatabase(database)}
-                >
-                  <span className="database-number">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span className="database-name">{database}</span>
-                  <span aria-hidden="true">↗</span>
-                </button>
-              </li>
-            ))}
-          </ul>
+          ))}
         </nav>
         <div className="sidebar-footer">
           <span className="footer-line" />
           <p>Explorer. Comprendre. Construire.</p>
-          <span>React · FlightPHP · MySQL</span>
+          <span>React · FlightPHP · MySQL · PostgreSQL</span>
         </div>
       </aside>
       <main className="main-content">
         <header className="topbar">
-          <span>ESPACE DE TRAVAIL</span>
+          <span>ESPACE DE TRAVAIL / {views.find((view) => view.id === active).label}</span>
           <span className="environment">Développement local</span>
         </header>
-        <ConnectionForm />
-        <section className="explorer" aria-labelledby="explorer-title">
-          <Feedback success={success} />
-          {selectedDatabase ? (
-            <DatabaseExplorer
-              key={selectedDatabase}
-              database={selectedDatabase}
-              onDeleted={databaseDeleted}
-              onRestored={loadDatabases}
-            />
-          ) : (
-            <>
-              <div className="section-heading">
-                <div>
-                  <p className="eyebrow">Explorateur / MySQL</p>
-                  <h2 id="explorer-title">Vos données, autrement.</h2>
-                  <p className="section-description">
-                    Sélectionnez une base pour explorer sa structure.
-                  </p>
+        {views.map(({ id, Component }) => (
+          <div key={id} id={`view-${id}`} className="workspace-view"
+            role="region" aria-labelledby={`nav-${id}`} hidden={active !== id}>
+            {id === "connections" ? (
+              <section className="explorer" aria-labelledby="connections-title">
+                <div className="section-heading">
+                  <div>
+                    <p className="eyebrow">SafeBase / Connexions</p>
+                    <h2 id="connections-title">Connexions</h2>
+                    <p className="section-description">
+                      Testez l’accès à votre serveur. L’enregistrement des connexions n’est pas encore disponible.
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="welcome">
-                <span className="welcome-symbol" aria-hidden="true">
-                  ✧
-                </span>
-                <p>
-                  Chaque projet commence
-                  <br />
-                  par une <em>structure.</em>
-                </p>
-                <span>Choisissez votre base dans le menu.</span>
-              </div>
-            </>
-          )}
-        </section>
-        <PostgresBackups />
+                <button type="button" className="action-button" aria-expanded={connectionOpen}
+                  aria-controls="connection-form-panel" onClick={() => setConnectionOpen((open) => !open)}>
+                  {connectionOpen ? "Fermer le formulaire" : "Ajouter une connexion"}
+                </button>
+                <div id="connection-form-panel" hidden={!connectionOpen}>
+                  {connectionOpen && <ConnectionForm />}
+                </div>
+              </section>
+            ) : visited.includes(id) && <Component />}
+          </div>
+        ))}
         <footer className="main-footer">
-          <span>MINI PHPMYADMIN</span>
-          <span>Une création Théoa</span>
+          <span>MINI PHPMYADMIN</span><span>Une création Théoa</span>
         </footer>
       </main>
     </div>
   );
 }
-
-export default App;

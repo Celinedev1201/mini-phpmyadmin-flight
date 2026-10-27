@@ -1123,3 +1123,46 @@ button:disabled {
   color: var(--prune);
   font: inherit;
 }
+
+/* Organisation des vues, dans la palette Théoa existante. */
+[hidden] { display: none !important; }
+.workspace-view { flex: 1; min-width: 0; }
+.workspace-view > .table-panel { margin: 40px 0; }
+.view-navigation { display: grid; gap: 8px; }
+.view-navigation .is-active { border-color: var(--gold); }
+.mysql-layout {
+  display: grid;
+  grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
+  gap: 28px;
+  padding: 36px 0;
+}
+.mysql-layout .explorer { min-width: 0; padding: 0; }
+.mysql-menu {
+  align-self: start;
+  min-width: 0;
+  padding: 16px 10px;
+  border: 1px solid var(--gold);
+  border-radius: 16px;
+  background: var(--prune);
+  color: var(--cream);
+}
+.mysql-menu > .disclosure > .action-button { color: var(--cream); }
+.mysql-menu > .disclosure > .action-button:hover { color: var(--prune); }
+.mysql-menu .feedback { color: var(--champagne); }
+.mysql-menu .create-database { margin-top: 20px; }
+.explorer > .table-panel { margin-bottom: 24px; }
+.disclosure > .action-button { min-height: 44px; }
+.structure-table .disclosure { display: inline-block; vertical-align: top; }
+.restore-backup { min-width: 0; width: 230px; max-width: 100%; }
+.action-button:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
+.sidebar .action-button:focus-visible,
+.mysql-menu .action-button:focus-visible { outline-color: var(--gold); }
+@media (max-width: 1200px) {
+  .mysql-layout { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  .view-navigation { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .view-navigation .database-button { padding: 12px 8px; gap: 4px; }
+  .view-navigation .database-name { font-size: 0.75rem; }
+  .mysql-layout { gap: 24px; padding: 28px 0; }
+}

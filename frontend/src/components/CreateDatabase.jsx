@@ -3,6 +3,7 @@ import { request } from "../services/api";
 import Feedback from "./Feedback";
 
 function CreateDatabase({ onCreated }) {
+  const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,6 +28,12 @@ function CreateDatabase({ onCreated }) {
   }
 
   return (
+    <div className="disclosure">
+      <button type="button" className="action-button" aria-expanded={open}
+        aria-controls="create-database-panel" onClick={() => setOpen((value) => !value)}>
+        {open ? "Fermer la création" : "Créer une base"}
+      </button>
+      <div id="create-database-panel" hidden={!open}>
     <form className="create-database" onSubmit={handleSubmit}>
       <label htmlFor="database-name">Nouvelle base</label>
       <input id="database-name" value={name} onChange={(event) => setName(event.target.value)}
@@ -35,6 +42,8 @@ function CreateDatabase({ onCreated }) {
       <button disabled={loading}>Créer la base</button>
       <Feedback loading={loading} error={error} success={success} />
     </form>
+      </div>
+    </div>
   );
 }
 
