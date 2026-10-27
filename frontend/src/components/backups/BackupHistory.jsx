@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { request, databasePath } from "../services/api";
-import Feedback from "./Feedback";
+import { request, databasePath } from "../../services/api";
+import Feedback from "../common/Feedback";
 import RestoreBackup from "./RestoreBackup";
 // Affiche les sauvegardes de la base avec les actions de téléchargement et de restauration.
 // database et engine déterminent l’adresse à appeler. refreshKey change après une sauvegarde pour relire

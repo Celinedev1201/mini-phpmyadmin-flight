@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from "react";
-import { request, databasePath } from "../services/api";
-import Feedback from "./Feedback";
+import { request, databasePath } from "../../services/api";
+import Feedback from "../common/Feedback";
 // Affiche le formulaire de création d’une table dans la base sélectionnée.
 // database indique où créer la table et onCreated est la fonction du parent qui recharge la liste. open contrôle
 // l’affichage du formulaire et les autres états gardent la saisie, le chargement et les messages.

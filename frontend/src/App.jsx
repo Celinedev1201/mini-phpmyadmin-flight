@@ -1,7 +1,8 @@
 import { useState } from "react";
-import ConnectionForm from "./components/ConnectionForm";
-import MysqlView from "./components/MysqlView";
-import PostgresBackups from "./components/PostgresBackups";
+import ConnectionForm from "./components/connections/ConnectionForm";
+import MysqlView from "./components/views/MysqlView";
+import PostgresBackups from "./components/views/PostgresBackups";
+import Alerts from "./components/alerts/Alerts";
 
 const views = [
   { id: "connections", label: "Connexions", Component: null },
@@ -80,6 +81,7 @@ export default function App() {
             ) : visited.includes(id) && <Component menuTarget={mysqlMenu} />}
           </div>
         ))}
+        <Alerts />
         <footer className="main-footer">
           <span>MINI PHPMYADMIN</span><span>Une création Théoa</span>
         </footer>

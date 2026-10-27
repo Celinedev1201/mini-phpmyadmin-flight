@@ -7,6 +7,7 @@ if (PHP_SAPI !== 'cli') {
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 require dirname(__DIR__) . '/src/http/Api.php';
+require dirname(__DIR__) . '/src/alerts/AlertLogger.php';
 require dirname(__DIR__) . '/src/validation/SqlValidation.php';
 require dirname(__DIR__) . '/src/services/BackupService.php';
 
@@ -44,6 +45,12 @@ try {
         )
     );
 } catch (Throwable $exception) {
+     AlertLogger::record(
+        $engine,
+        'backup',
+        $database,
+        'La sauvegarde automatique a échoué.'
+    );
     fwrite(
         STDERR,
         sprintf(

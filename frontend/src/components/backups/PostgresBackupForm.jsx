@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { request } from "../services/api";
-import Feedback from "./Feedback";
+import { request } from "../../services/api";
+import Feedback from "../common/Feedback";
 // Permet de choisir une base PostgreSQL puis de lancer sa sauvegarde.
 // La base sélectionnée et les choix viennent du parent. onSelect lui transmet le nouveau choix et onSaved lui
 // signale une sauvegarde terminée. saving bloque le bouton pendant la demande.

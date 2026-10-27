@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { request } from "../services/api";
-import Feedback from "./Feedback";
-import BackupHistory from "./BackupHistory";
-import PostgresBackupForm from "./PostgresBackupForm";
-import DeleteButton from "./DeleteButton";
+import { request } from "../../services/api";
+import Feedback from "../common/Feedback";
+import BackupHistory from "../backups/BackupHistory";
+import PostgresBackupForm from "../backups/PostgresBackupForm";
+import DeleteButton from "../common/DeleteButton";
 // Rassemble les bases PostgreSQL, leurs sauvegardes et les actions disponibles.
 // Le composant charge les bases et garde la sélection encore existante. Les compteurs déclenchent une nouvelle
 // lecture après une sauvegarde, une restauration ou une suppression.

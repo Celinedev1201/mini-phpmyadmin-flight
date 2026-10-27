@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { request, tablePath, columnTypes } from "../services/api";
-import Feedback from "./Feedback";
+import { request, tablePath, columnTypes } from "../../services/api";
+import Feedback from "../common/Feedback";
 // Affiche le formulaire qui ajoute une colonne à la table choisie.
 // database et table indiquent où ajouter la colonne. Les états gardent son nom et le type choisi. onCreated
 // permet au parent de relire la structure quand le serveur a terminé.

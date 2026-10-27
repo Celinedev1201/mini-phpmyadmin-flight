@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { request, tablePath } from "../services/api";
-import Feedback from "./Feedback";
-import DeleteButton from "./DeleteButton";
+import { request, tablePath } from "../../services/api";
+import Feedback from "../common/Feedback";
+import DeleteButton from "../common/DeleteButton";
 import RowForm from "./RowForm";
 // Affiche au maximum 50 lignes et prépare les actions sur la ligne choisie.
 // La réponse du serveur donne les lignes et leur clé primaire. Cette clé identifie la ligne SQL, tandis que

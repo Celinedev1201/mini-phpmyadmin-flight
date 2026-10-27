@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
-import { request, databasePath } from "../services/api";
-import Feedback from "./Feedback";
+import { request, databasePath } from "../../services/api";
+import Feedback from "../common/Feedback";
 // Ouvre un formulaire pour restaurer le fichier choisi dans une nouvelle base.
 // database et filename désignent la sauvegarde choisie. open masque le formulaire au départ. target garde le nom
 // de destination et onRestored prévient le parent après une restauration réussie.

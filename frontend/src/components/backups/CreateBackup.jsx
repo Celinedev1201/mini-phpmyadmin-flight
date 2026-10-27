@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { request, databasePath } from "../services/api";
-import Feedback from "./Feedback";
+import { request, databasePath } from "../../services/api";
+import Feedback from "../common/Feedback";
 // Affiche le bouton de sauvegarde de la base MySQL et le résultat de la demande.
 // database indique quelle base MySQL exporter. loading bloque le bouton pendant la demande. onCreated avertit le
 // parent après réussite pour actualiser la liste des sauvegardes.

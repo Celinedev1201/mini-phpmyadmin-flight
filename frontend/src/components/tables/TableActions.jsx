@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { request, tablePath } from "../services/api";
-import Feedback from "./Feedback";
-import DeleteButton from "./DeleteButton";
+import { request, tablePath } from "../../services/api";
+import Feedback from "../common/Feedback";
+import DeleteButton from "../common/DeleteButton";
 // Permet de renommer la table ou de demander sa suppression.
 // database et table construisent l’adresse de la table. Le champ name commence avec son nom actuel. Le composant
 // réutilise DeleteButton pour garder la confirmation de suppression.

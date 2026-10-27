@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { request } from "../services/api";
+import { request } from "../../services/api";
 import Feedback from "./Feedback";
 
 // Une question sous le bouton suffit pour confirmer la suppression.

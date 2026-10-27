@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { request } from "../services/api";
-import DatabaseExplorer from "./DatabaseExplorer";
-import CreateDatabase from "./CreateDatabase";
-import Feedback from "./Feedback";
+import { request } from "../../services/api";
+import DatabaseExplorer from "../databases/DatabaseExplorer";
+import CreateDatabase from "../databases/CreateDatabase";
+import Feedback from "../common/Feedback";
 // Garde la base sélectionnée et affiche le menu et l’explorateur MySQL.
 // Les états gardent la liste des bases et le nom sélectionné. createPortal() place le menu des bases dans la
 // barre de gauche tout en gardant sa logique dans ce composant.

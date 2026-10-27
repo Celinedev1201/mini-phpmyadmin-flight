@@ -5,6 +5,8 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 // Charge les classes du projet, comme les routes ci-dessous.
 require dirname(__DIR__) . '/src/database/Database.php';
 require dirname(__DIR__) . '/src/http/Api.php';
+require dirname(__DIR__) . '/src/alerts/AlertLogger.php';
+require dirname(__DIR__) . '/src/alerts/AlertCatalog.php';
 require dirname(__DIR__) . '/src/validation/SqlValidation.php';
 require dirname(__DIR__) . '/src/services/SchemaService.php';
 require dirname(__DIR__) . '/src/services/DatabaseService.php';
@@ -30,6 +32,7 @@ require dirname(__DIR__) . '/src/routes/rows.php';
 require dirname(__DIR__) . '/src/routes/backups.php';
 require dirname(__DIR__) . '/src/routes/postgres.php';
 require dirname(__DIR__) . '/src/routes/connections.php';
+require dirname(__DIR__) . '/src/routes/alerts.php';
 
 // Démarre Flight : il choisit la route correspondant à l’adresse et à l’action reçues.
 Flight::start();

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { request, tablePath } from "../services/api";
-import Feedback from "./Feedback";
+import { request, tablePath } from "../../services/api";
+import Feedback from "../common/Feedback";
 
 // Le même formulaire sert à ajouter une ligne ou à modifier la ligne reçue.
 // Affiche les champs pour ajouter une ligne ou modifier les valeurs d’une ligne existante.

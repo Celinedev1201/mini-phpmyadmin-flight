@@ -15,21 +15,35 @@ Un **service PHP** est une classe contenant les fonctions qui réalisent les op�
 
 Les chemins de ce tableau partent de `frontend/src/`.
 
+Les composants sont rangés selon leur rôle dans `components/` :
+
+- `views/` rassemble les vues MySQL et PostgreSQL.
+- `databases/` contient l’explorateur d’une base et la création de bases MySQL.
+- `tables/`, `columns/` et `rows/` regroupent les actions sur les tables, les colonnes et les lignes.
+- `backups/` contient la création, l’historique et la restauration des sauvegardes.
+- `connections/` contient le formulaire de test de connexion.
+- `alerts/` contient l’affichage des alertes.
+- `common/` contient les éléments réutilisés, comme les messages et la confirmation de suppression.
+
+`App.jsx` assemble les vues, `main.jsx` démarre React, `services/api.js` envoie les demandes au backend
+et `index.css` conserve les styles communs.
+
+
 | Fichier | Rôle |
 | --- | --- |
 | `main.jsx` | Démarre React et affiche `App`. |
 | `App.jsx` | Affiche le menu de gauche et garde le nom de la base choisie. |
-| `components/DatabaseExplorer.jsx` | Affiche les tables de cette base et garde le nom de la table choisie. |
-| `components/TableStructure.jsx` | Affiche les colonnes et assemble les formulaires et les données de la table. |
-| `components/CreateDatabase.jsx` | Formulaire pour créer une base. |
-| `components/CreateTable.jsx` | Formulaire pour créer une table. |
-| `components/TableActions.jsx` | Renommer ou supprimer une table. |
-| `components/AddColumn.jsx` | Formulaire pour ajouter une colonne. |
-| `components/ColumnActions.jsx` | Renommer une colonne, changer son type ou la supprimer. |
-| `components/TableRows.jsx` | Affiche les lignes et les boutons Modifier et Supprimer. |
-| `components/RowForm.jsx` | Formulaire commun pour ajouter une ligne ou modifier une ligne existante. |
-| `components/DeleteButton.jsx` | Demande confirmation ; pour une base, demande aussi de recopier son nom. |
-| `components/Feedback.jsx` | Affiche les messages de chargement, réussite et erreur. |
+| `components/databases/DatabaseExplorer.jsx` | Affiche les tables de cette base et garde le nom de la table choisie. |
+| `components/tables/TableStructure.jsx` | Affiche les colonnes et assemble les formulaires et les données de la table. |
+| `components/databases/CreateDatabase.jsx` | Formulaire pour créer une base. |
+| `components/tables/CreateTable.jsx` | Formulaire pour créer une table. |
+| `components/tables/TableActions.jsx` | Renommer ou supprimer une table. |
+| `components/columns/AddColumn.jsx` | Formulaire pour ajouter une colonne. |
+| `components/columns/ColumnActions.jsx` | Renommer une colonne, changer son type ou la supprimer. |
+| `components/rows/TableRows.jsx` | Affiche les lignes et les boutons Modifier et Supprimer. |
+| `components/rows/RowForm.jsx` | Formulaire commun pour ajouter une ligne ou modifier une ligne existante. |
+| `components/common/DeleteButton.jsx` | Demande confirmation ; pour une base, demande aussi de recopier son nom. |
+| `components/common/Feedback.jsx` | Affiche les messages de chargement, réussite et erreur. |
 | `services/api.js` | Regroupe les appels `fetch()`, lit le JSON reçu et signale les erreurs. |
 | `index.css` | Contient tous les styles Théoa, classés par parties commentées. |
 

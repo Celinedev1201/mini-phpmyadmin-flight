@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { request, tablePath } from "../services/api";
-import AddColumn from "./AddColumn";
-import ColumnActions from "./ColumnActions";
-import RowForm from "./RowForm";
+import { request, tablePath } from "../../services/api";
+import AddColumn from "../columns/AddColumn";
+import ColumnActions from "../columns/ColumnActions";
+import RowForm from "../rows/RowForm";
 import TableActions from "./TableActions";
-import TableRows from "./TableRows";
-import Feedback from "./Feedback";
+import TableRows from "../rows/TableRows";
+import Feedback from "../common/Feedback";
 // Affiche les colonnes et rassemble les formulaires et les données de la table.
 // Les colonnes sont chargées depuis l’API. isTable autorise les actions sur une table et limite les vues à la
 // lecture. Les compteurs permettent de reconstruire les formulaires ou de rafraîchir les lignes après une

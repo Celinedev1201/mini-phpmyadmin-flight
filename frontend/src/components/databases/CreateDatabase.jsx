@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { request } from "../services/api";
-import Feedback from "./Feedback";
+import { request } from "../../services/api";
+import Feedback from "../common/Feedback";
 // Affiche le formulaire de création MySQL seulement quand on ouvre cette partie.
 // open garde le formulaire fermé au départ. name contient le nom saisi et onCreated permet au parent
 // d’actualiser les bases. Les messages indiquent si la demande a réussi ou échoué.

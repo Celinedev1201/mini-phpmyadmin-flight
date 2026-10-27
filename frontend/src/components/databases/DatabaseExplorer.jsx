@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { request, databasePath } from "../services/api";
-import CreateTable from "./CreateTable";
-import DeleteButton from "./DeleteButton";
-import TableStructure from "./TableStructure";
-import Feedback from "./Feedback";
-import CreateBackup from "./CreateBackup";
-import BackupHistory from "./BackupHistory";
+import { request, databasePath } from "../../services/api";
+import CreateTable from "../tables/CreateTable";
+import DeleteButton from "../common/DeleteButton";
+import TableStructure from "../tables/TableStructure";
+import Feedback from "../common/Feedback";
+import CreateBackup from "../backups/CreateBackup";
+import BackupHistory from "../backups/BackupHistory";
 // Rassemble les tables, les sauvegardes et les actions de la base MySQL choisie.
 // database indique la base à explorer. Les états gardent ses tables et la table sélectionnée. Les fonctions
 // transmises aux enfants permettent de recharger les listes après leurs actions.

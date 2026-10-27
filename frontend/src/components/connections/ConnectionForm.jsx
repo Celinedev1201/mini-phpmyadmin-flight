@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { request } from "../services/api";
-import Feedback from "./Feedback";
+import { request } from "../../services/api";
+import Feedback from "../common/Feedback";
 // Affiche les champs de connexion et permet de tester les informations sans les enregistrer.
 // connection regroupe les valeurs des champs, dont le moteur et le port. Le formulaire sert seulement à tester
 // l’accès. loading empêche plusieurs tests simultanés et les messages affichent la réponse.

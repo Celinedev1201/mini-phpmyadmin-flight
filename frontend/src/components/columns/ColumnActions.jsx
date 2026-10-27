@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { request, tablePath, columnTypes } from "../services/api";
-import DeleteButton from "./DeleteButton";
-import Feedback from "./Feedback";
+import { request, tablePath, columnTypes } from "../../services/api";
+import DeleteButton from "../common/DeleteButton";
+import Feedback from "../common/Feedback";
 // Permet de renommer une colonne, de changer son type ou de demander sa suppression.
 // column contient la description actuelle de la colonne. editing décide si son formulaire est visible.
 // TYPE_RESTRICTION explique pourquoi certains types ne peuvent pas être changés.
