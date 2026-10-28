@@ -6,7 +6,25 @@
 Flight::route(
     'POST /api/databases/@database/backups',
     function (string $database): void {
-        Api::run(fn() => BackupService::create($database), 201);
+        Api::run(function () use ($database): array {
+            try {
+                return BackupService::create($database);
+            } catch (Throwable $exception) {
+                if (
+                    !($exception instanceof HttpError)
+                    || $exception->status >= 500
+                ) {
+                    AlertLogger::record(
+                        'mysql',
+                        'backup',
+                        $database,
+                        'La sauvegarde manuelle a échoué.'
+                    );
+                }
+
+                throw $exception;
+            }
+        }, 201);
     }
 );
 
@@ -16,7 +34,7 @@ Flight::route(
 Flight::route(
     'GET /api/databases/@database/backups',
     function (string $database): void {
-        Api::run(fn () => BackupCatalog::list($database));
+        Api::run(fn() => BackupCatalog::list($database));
     }
 );
 
@@ -64,11 +82,27 @@ Flight::route(
             // Le nom transmis dans l’URL ne contient pas l’extension.
             $filename .= '.sql';
 
-            return RestoreService::restore(
-                $database,
-                $filename,
-                trim($target)
-            );
+            try {
+                return RestoreService::restore(
+                    $database,
+                    $filename,
+                    trim($target)
+                );
+            } catch (Throwable $exception) {
+                if (
+                    !($exception instanceof HttpError)
+                    || $exception->status >= 500
+                ) {
+                    AlertLogger::record(
+                        'mysql',
+                        'restore',
+                        trim($target),
+                        'La restauration MySQL a échoué.'
+                    );
+                }
+
+                throw $exception;
+            }
         }, 201);
     }
 );

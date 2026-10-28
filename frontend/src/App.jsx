@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ConnectionForm from "./components/connections/ConnectionForm";
 import MysqlView from "./components/views/MysqlView";
 import PostgresBackups from "./components/views/PostgresBackups";
-import Alerts from "./components/alerts/Alerts";
+import AlertsPanel from "./components/alerts/AlertsPanel";
+import useAlerts from "./components/alerts/useAlerts";
 
 const views = [
   { id: "connections", label: "Connexions", Component: null },
@@ -13,6 +14,9 @@ const views = [
 // useState() garde la vue active et les vues déjà ouvertes. Les boutons du menu changent uniquement la vue
 // affichée. Les composants masqués restent montés pour conserver les sélections.
 export default function App() {
+  const alerts = useAlerts();
+  const [alertsOpen, setAlertsOpen] = useState(false);
+  const alertsButton = useRef(null);
   const [mysqlMenu, setMysqlMenu] = useState(null);
   const [connectionOpen, setConnectionOpen] = useState(false);
   const [active, setActive] = useState("connections");
@@ -54,7 +58,15 @@ export default function App() {
       <main className="main-content">
         <header className="topbar">
           <span>ESPACE DE TRAVAIL / {views.find((view) => view.id === active).label}</span>
-          <span className="environment">Développement local</span>
+          <div className="topbar-actions">
+            <span className="environment">Développement local</span>
+            <button ref={alertsButton} type="button" className="action-button"
+              aria-haspopup="dialog" aria-controls="alerts-dialog" aria-expanded={alertsOpen}
+              title={alerts.alerts === null ? "Historique des alertes : nombre indisponible" : "Historique des alertes disponibles"}
+              onClick={() => setAlertsOpen(true)}>
+              Alertes · {alerts.alerts === null ? "—" : alerts.alerts.length}
+            </button>
+          </div>
         </header>
         {views.map(({ id, Component }) => (
           <div key={id} id={`view-${id}`} className="workspace-view"
@@ -81,7 +93,8 @@ export default function App() {
             ) : visited.includes(id) && <Component menuTarget={mysqlMenu} />}
           </div>
         ))}
-        <Alerts />
+        <AlertsPanel open={alertsOpen} onClose={() => setAlertsOpen(false)}
+          triggerRef={alertsButton} alerts={alerts} />
         <footer className="main-footer">
           <span>MINI PHPMYADMIN</span><span>Une création Théoa</span>
         </footer>
