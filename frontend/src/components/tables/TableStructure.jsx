@@ -35,7 +35,9 @@ function TableStructure({ database, table, onTableChanged }) {
     }
   }
   // Relance le chargement quand les valeurs entre crochets changent.
-  useEffect(() => { loadColumns(); }, [database, table]);
+  useEffect(() => {
+    loadColumns();
+  }, [database, table]);
   // Affiche le résultat et recharge la structure après un changement de colonne.
   // Le message est affiché et structureVersion augmente. Ce compteur recrée les formulaires pour ne pas garder
   // d’anciens noms de colonnes. loadColumns() relit ensuite la structure.
@@ -48,39 +50,89 @@ function TableStructure({ database, table, onTableChanged }) {
 
   return (
     <section className="table-panel">
-      <div className="panel-heading"><span>Structure de {table}</span><span>{database}</span></div>
+      <div className="panel-heading">
+        <span>Structure de {table}</span>
+        <span>{database}</span>
+      </div>
       <Feedback loading={loading} error={error} success={success} />
-      <button className="action-button" onClick={loadColumns} disabled={loading}>Actualiser la structure</button>
-      {isTable && <TableActions database={database} table={table} onChanged={onTableChanged} />}
-      {isTable && <AddColumn database={database} table={table} onCreated={columnChanged} />}
+      <button
+        className="action-button"
+        onClick={loadColumns}
+        disabled={loading}
+      >
+        Actualiser la structure
+      </button>
+      {isTable && (
+        <TableActions
+          database={database}
+          table={table}
+          onChanged={onTableChanged}
+        />
+      )}
+      {isTable && (
+        <AddColumn
+          database={database}
+          table={table}
+          onCreated={columnChanged}
+        />
+      )}
       <div className="structure-scroll">
         <table className="structure-table">
           <thead>
             <tr>
-              <th>Colonne</th><th>Type</th><th>Valeur NULL</th><th>Clé</th><th>Extra</th><th>Actions</th>
+              <th>Colonne</th>
+              <th>Type</th>
+              <th>Valeur NULL</th>
+              <th>Clé</th>
+              <th>Extra</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {columns.map((column) => (
               <tr key={column.COLUMN_NAME}>
-                <td>{column.COLUMN_NAME}</td><td>{column.COLUMN_TYPE}</td>
-                <td>{column.IS_NULLABLE === "YES" ? "Autorisée" : "Interdite"}</td>
-                <td>{column.COLUMN_KEY === "PRI" ? "Primaire" : column.COLUMN_KEY || "—"}</td>
+                <td>{column.COLUMN_NAME}</td>
+                <td>{column.COLUMN_TYPE}</td>
+                <td>
+                  {column.IS_NULLABLE === "YES" ? "Autorisée" : "Interdite"}
+                </td>
+                <td>
+                  {column.COLUMN_KEY === "PRI"
+                    ? "Primaire"
+                    : column.COLUMN_KEY || "—"}
+                </td>
                 <td>{column.EXTRA || "—"}</td>
-                <td><ColumnActions column={column} database={database} table={table}
-                  disabled={loading || !isTable} onChanged={columnChanged} /></td>
+                <td>
+                  <ColumnActions
+                    column={column}
+                    database={database}
+                    table={table}
+                    disabled={loading || !isTable}
+                    onChanged={columnChanged}
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       {!loading && !error && isTable && (
-        <RowForm key={`insert-${structureVersion}`} database={database} table={table} columns={columns}
-          onSaved={() => setRowsVersion((previous) => previous + 1)} />
+        <RowForm
+          key={`insert-${structureVersion}`}
+          database={database}
+          table={table}
+          columns={columns}
+          onSaved={() => setRowsVersion((previous) => previous + 1)}
+        />
       )}
       {!loading && !error && (
-        <TableRows key={`rows-${structureVersion}`} database={database} table={table}
-          columns={columns} refreshKey={rowsVersion} />
+        <TableRows
+          key={`rows-${structureVersion}`}
+          database={database}
+          table={table}
+          columns={columns}
+          refreshKey={rowsVersion}
+        />
       )}
     </section>
   );

@@ -1,16 +1,19 @@
 <?php
 
-// Centralise la connexion PDO au serveur PostgreSQL.
+// Centralise les connexions au serveur PostgreSQL.
 final class PostgresDatabase
 {
-    // Ouvre une connexion PostgreSQL avec les paramètres de l’environnement.
-    // getenv() récupère le serveur, le port, la base et le compte PostgreSQL. Le DSN rassemble la destination. new
-    // PDO() renvoie la connexion que les autres classes utiliseront pour leurs requêtes.
-    public static function connect(): PDO
+    public static function connect(?string $database = null): PDO
     {
         $host = getenv('PG_HOST') ?: 'postgres';
         $port = getenv('PG_PORT') ?: '5432';
-        $database = getenv('PG_DATABASE') ?: 'postgres';
+
+        // Sans argument, les appels existants gardent leur base habituelle.
+        if ($database === null) {
+            $database = getenv('PG_DATABASE') ?: 'postgres';
+        } else {
+            PostgresValidation::database($database);
+        }
 
         $dsn = "pgsql:host=$host;port=$port;dbname=$database";
 

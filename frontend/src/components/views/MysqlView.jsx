@@ -8,6 +8,7 @@ import Feedback from "../common/Feedback";
 // Les états gardent la liste des bases et le nom sélectionné. createPortal() place le menu des bases dans la
 // barre de gauche tout en gardant sa logique dans ce composant.
 export default function MysqlView({ menuTarget }) {
+  const [copying, setCopying] = useState(false);
   const [databases, setDatabases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -51,17 +52,20 @@ export default function MysqlView({ menuTarget }) {
     <div className="mysql-layout">
       {menuTarget && createPortal(
       <div className="mysql-menu">
+        <fieldset className="database-copy-scope" disabled={copying}>
         <CreateDatabase onCreated={loadDatabases} />
+        </fieldset>
         <nav aria-label="Bases de données">
           <div className="nav-heading">
             <span>Bases de données</span><span className="count">{databases.length}</span>
           </div>
           <Feedback loading={loading} error={error} />
-          {error && <button className="database-button" onClick={loadDatabases}>Réessayer</button>}
+          {error && <button className="database-button" disabled={copying} onClick={loadDatabases}>Réessayer</button>}
           <ul className="database-list">
             {databases.map((database, index) => (
               <li key={database}>
                 <button className={`database-button${selectedDatabase === database ? " is-active" : ""}`}
+                  disabled={copying}
                   aria-current={selectedDatabase === database ? "true" : undefined}
                   onClick={() => selectDatabase(database)}>
                   <span className="database-number">{String(index + 1).padStart(2, "0")}</span>
@@ -78,6 +82,7 @@ export default function MysqlView({ menuTarget }) {
             <DatabaseExplorer
               key={selectedDatabase}
               database={selectedDatabase}
+              onCopyBusy={setCopying}
               onDeleted={databaseDeleted}
               onRestored={loadDatabases}
             />

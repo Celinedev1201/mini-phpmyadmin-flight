@@ -4,12 +4,14 @@ import CreateTable from "../tables/CreateTable";
 import DeleteButton from "../common/DeleteButton";
 import TableStructure from "../tables/TableStructure";
 import Feedback from "../common/Feedback";
+import CopyDatabaseToPostgres from "./CopyDatabaseToPostgres";
 import CreateBackup from "../backups/CreateBackup";
 import BackupHistory from "../backups/BackupHistory";
 // Rassemble les tables, les sauvegardes et les actions de la base MySQL choisie.
 // database indique la base à explorer. Les états gardent ses tables et la table sélectionnée. Les fonctions
 // transmises aux enfants permettent de recharger les listes après leurs actions.
-function DatabaseExplorer({ database, onDeleted, onRestored }) {
+function DatabaseExplorer({ database, onDeleted, onRestored, onCopyBusy }) {
+  const [copying, setCopying] = useState(false);
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState("");
   const [loading, setLoading] = useState(true);
@@ -64,25 +66,16 @@ function DatabaseExplorer({ database, onDeleted, onRestored }) {
           <span>tables & vues</span>
         </div>
       </div>
+      <div className="database-toolbar" aria-label="Actions de la base">
+      <fieldset className="database-copy-scope" disabled={copying}>
       <CreateBackup
         database={database}
         onCreated={() => setBackupsVersion((value) => value + 1)}
       />
-      <BackupHistory
-        key={database}
-        database={database}
-        refreshKey={backupsVersion}
-        onRestored={onRestored}
-      />
-      <div className="resource-actions">
-        <DeleteButton
-          path={databasePath(database)}
-          target={database}
-          explicitName
-          onDeleted={onDeleted}
-        />
-        <span>Suppression de la base entière</span>
+      </fieldset>
+      <CopyDatabaseToPostgres database={database} onBusy={(busy) => { setCopying(busy); onCopyBusy(busy); }} />
       </div>
+      <fieldset className="database-copy-scope" disabled={copying}>
       <Feedback success={success} />
       {selectedTable && (
         <TableStructure
@@ -130,6 +123,22 @@ function DatabaseExplorer({ database, onDeleted, onRestored }) {
           </p>
         )}
       </div>
+      <BackupHistory
+        key={database}
+        database={database}
+        refreshKey={backupsVersion}
+        onRestored={onRestored}
+      />
+      <div className="resource-actions">
+        <DeleteButton
+          path={databasePath(database)}
+          target={database}
+          explicitName
+          onDeleted={onDeleted}
+        />
+        <span>Suppression de la base entière</span>
+      </div>
+      </fieldset>
     </>
   );
 }

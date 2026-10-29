@@ -75,19 +75,20 @@ La rétention, la rotation des logs et le stockage externe restent à prévoir.
 
 ## Tests automatisés
 
-État au **28 octobre 2026** : `backend/tests/run.php` lance les cinq tests
+État au **29 octobre 2026** : `backend/tests/run.php` lance les six tests
 ci-dessous, dans l’ordre, chacun dans un processus PHP séparé. Il continue après
 un test en échec et affiche le bilan final.
 
 | Nom affiché | Ce qui est vérifié |
 | --- | --- |
+| MySQL vers PostgreSQL : copie complète de base | Structure et données de deux tables, table vide, accents, NULL, identités, refus de structures et destination existante, annulation et suppression après échec. |
 | API : liste des bases MySQL | `GET /api/databases` répond en HTTP 200 avec un JSON valide contenant une liste `databases`. |
 | API : liste des bases PostgreSQL | `GET /api/postgres/databases` répond en HTTP 200 avec un JSON valide contenant une liste `databases`. |
 | API : lecture des alertes | `GET /api/alerts` répond en HTTP 200 avec un JSON valide contenant une liste `alerts`. |
 | MySQL : sauvegarde, restauration et comparaison des données | Création d’une base et d’un produit témoin, sauvegarde SQL non vide, restauration dans une autre base, puis comparaison exacte des lignes restaurées avec la valeur attendue. |
 | PostgreSQL : sauvegarde, restauration et comparaison des données | Même cycle sur PostgreSQL, avec comparaison exacte des lignes restaurées avec la valeur attendue. |
 
-Les **trois premiers tests** utilisent `tests/api.php` et font uniquement des
+Les **trois tests API** utilisent `tests/api.php` et font uniquement des
 lectures HTTP sur `TEST_API_URL` (`http://backend:8000` dans Compose).
 Une liste vide est acceptée. Ils ne vérifient pas le contenu détaillé de chaque
 élément ni les routes de création, suppression ou restauration.
@@ -119,14 +120,15 @@ par contrôle et 20 tentatives ; la requête du contrôle de l’API a un délai
 3 secondes. Les scripts de test n’ajoutent pas de boucle d’attente : chaque
 lecture HTTP a un délai de 5 secondes.
 
-Résultat réellement obtenu, communiqué pour cette documentation le
-**28 octobre 2026** :
+Résultat réellement exécuté via `docker compose exec -T backend php tests/run.php` le
+**29 octobre 2026** :
 
 ```text
-5 tests exécutés, 0 échec(s).
+6 tests exécutés, 0 échec(s).
 ```
 
-Les tests n’ont pas été relancés lors de cette mise à jour documentaire.
+Le nouveau test appelle directement `DatabaseCopyService` sur les moteurs réels.
+Voir [le parcours de copie et ses limites](../README.md#copier-une-base-mysql-vers-postgresql).
 Après exécution, le conteneur `tests` s’arrête normalement : code `0` si tous les
 tests réussissent, code `1` si au moins un échoue. Un échec de nettoyage compte
 aussi comme un échec. `restart: "no"` empêche le redémarrage automatique.

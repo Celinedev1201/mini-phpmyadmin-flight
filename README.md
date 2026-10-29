@@ -133,7 +133,7 @@ son stockage.
 
 Le backend attend que MySQL et PostgreSQL soient déclarés disponibles par leurs
 contrôles de santé. Le service `tests` attend ensuite aussi celui de l’API,
-puis lance automatiquement les cinq tests de `backend/tests/run.php`.
+puis lance automatiquement les six tests de `backend/tests/run.php`.
 
 ### 6. Vérifier les conteneurs
 
@@ -392,10 +392,9 @@ docker compose run --rm tests
 ```
 
 La seconde commande crée un conteneur temporaire, supprimé après son exécution.
-Résultat obtenu communiqué le 28 octobre 2026 : **5 tests exécutés, 0 échec(s).**
-Les tests n’ont pas été relancés pour cette mise à jour documentaire.
+Résultat exécuté le 29 octobre 2026 avec `docker compose exec -T backend php tests/run.php` : **6 tests exécutés, 0 échec(s).**
 
-La suite vérifie trois lectures HTTP (bases MySQL, bases PostgreSQL et alertes),
+La suite vérifie d’abord la copie complète MySQL → PostgreSQL, puis trois lectures HTTP (bases MySQL, bases PostgreSQL et alertes),
 puis deux sauvegardes/restaurations via les services PHP, avec une donnée témoin.
 Ces deux derniers tests créent des bases temporaires à suffixe aléatoire et tentent
 leur nettoyage ainsi que celui de leur sauvegarde. Des éléments peuvent rester
@@ -431,3 +430,37 @@ Le PostgreSQL de cette intégration ne propose pas de CRUD complet.
 
 Voir [le guide SafeBase](docs/SAFEBASE.md) pour cron, les tests, le diagnostic
 et les exigences du TP restant à couvrir.
+
+### Copier une base MySQL vers PostgreSQL
+
+Sélectionner une base MySQL, cliquer sur « Copier la base vers PostgreSQL »
+près de la sauvegarde, saisir un **nouveau** nom PostgreSQL et confirmer.
+Le résultat indique la destination, le nombre de tables et de lignes copiées.
+La route est `POST /api/databases/{database}/copy-to-postgres`, avec
+`{"target":"nouvelle_base"}`. Le parcours de copie par table est retiré.
+
+La copie accepte uniquement les tables InnoDB simples : INT, INT UNSIGNED
+(BIGINT avec contrainte 0…4294967295), VARCHAR(n), TEXT, DECIMAL(p,s) et DATE.
+Noms et ordre des colonnes, NULL, NOT NULL et clés primaires sont conservés.
+AUTO_INCREMENT devient une identité dont le compteur reprend au prochain numéro
+MySQL (y compris pour une table vide). Les noms doivent respecter le format de
+l’application et la limite PostgreSQL de 63 octets.
+
+Toute vue, clé étrangère, contrainte supplémentaire, index secondaire, déclencheur,
+colonne calculée, type ou défaut non pris en charge entraîne un refus explicite
+avec le nom de la table. Maximum **1 000 lignes par table**, sans troncature.
+Les caractères NUL, non représentables dans les textes PostgreSQL, sont refusés.
+
+Les données et métadonnées MySQL sont lues sous `FLUSH TABLES WITH READ LOCK` :
+le compte doit avoir `RELOAD` ou `FLUSH_TABLES`. Ce verrou bloque brièvement
+les écritures et changements de structure sur le serveur MySQL pendant la lecture ;
+la source reste intacte. La copie est conservée en mémoire avant création de la cible.
+Le compte PostgreSQL doit pouvoir créer des bases. Une destination existante
+est toujours refusée. Toutes les tables et données sont écrites dans une seule
+transaction. En cas d’échec, seule la nouvelle base créée est supprimée ; si ce
+nettoyage échoue, son nom est affiché pour une intervention manuelle.
+
+Le test `backend/tests/database-copy.php`, intégré au lanceur, compare deux tables
+(dont une vide), les accents, NULL, types, clés et compteurs ; il vérifie aussi les
+refus et la suppression de la destination après un échec pendant la copie.
+Les parcours visuels React et l’échec du nettoyage lui-même ne sont pas automatisés.

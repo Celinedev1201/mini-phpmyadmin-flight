@@ -1,6 +1,7 @@
 <?php
 
 $tests = [
+    ['MySQL vers PostgreSQL : copie complète de base', 'database-copy.php', []],
     [
         'API : liste des bases MySQL',
         'api.php',

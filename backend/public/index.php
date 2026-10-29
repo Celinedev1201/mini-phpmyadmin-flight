@@ -23,6 +23,9 @@ require dirname(__DIR__) . '/src/services/PostgresBackupService.php';
 require dirname(__DIR__) . '/src/backups/PostgresBackupCatalog.php';
 require dirname(__DIR__) . '/src/services/PostgresRestoreService.php';
 require dirname(__DIR__) . '/src/connections/ConnectionTest.php';
+require dirname(__DIR__) . '/src/services/PostgresColumnMapper.php';
+require dirname(__DIR__) . '/src/services/DatabaseCopySnapshot.php';
+require dirname(__DIR__) . '/src/services/DatabaseCopyService.php';
 
 require dirname(__DIR__) . '/src/routes/health.php';
 require dirname(__DIR__) . '/src/routes/databases.php';
@@ -33,6 +36,7 @@ require dirname(__DIR__) . '/src/routes/backups.php';
 require dirname(__DIR__) . '/src/routes/postgres.php';
 require dirname(__DIR__) . '/src/routes/connections.php';
 require dirname(__DIR__) . '/src/routes/alerts.php';
+require dirname(__DIR__) . '/src/routes/database-copy.php';
 
 // Démarre Flight : il choisit la route correspondant à l’adresse et à l’action reçues.
 Flight::start();
