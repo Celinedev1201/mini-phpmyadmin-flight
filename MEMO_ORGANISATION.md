@@ -74,6 +74,7 @@ Chaque dossier a un rôle simple :
 
 - `backend/public/` contient l’entrée de l’API : `index.php` charge les fichiers et démarre FlightPHP.
 - `backend/bin/` contient les scripts lancés dans le terminal ou par cron.
+- `backend/tests/` contient la suite automatisée API et sauvegarde/restauration.
 - `backend/src/database/` ouvre les connexions à MySQL et PostgreSQL.
 - `backend/src/http/` lit les demandes et prépare les réponses HTTP. `HttpError` reste dans `Api.php`.
 - `backend/src/validation/` vérifie les noms, les valeurs et les confirmations reçues.
@@ -117,7 +118,7 @@ Sans clé exploitable, les boutons de modification et suppression sont désactiv
 
 ## Les fichiers de configuration
 
-- `docker-compose.yaml` : organise les conteneurs frontend, backend et MySQL.
+- `docker-compose.yaml` : organise les conteneurs frontend, backend, MySQL, PostgreSQL, scheduler et tests.
 - Les `Dockerfile` : décrivent comment préparer les conteneurs frontend et backend.
 - `frontend/package.json` : liste les dépendances JavaScript et les commandes Vite.
 - `frontend/vite.config.js` : configure Vite et transmet les demandes `/api` au backend.
@@ -140,3 +141,24 @@ Le renommage d’une base MySQL n’est pas proposé ; cette limite est expliqu�
 - `bin/configure-cron.php` prépare une tâche quotidienne pour les deux moteurs.
 
 Le [guide SafeBase](docs/SAFEBASE.md) décrit les commandes et limites.
+
+## Où sont les tests automatisés ?
+
+État au **28 octobre 2026** : le service Docker `tests` lance `backend/tests/run.php`
+automatiquement après les contrôles de disponibilité de l’API et des deux moteurs SQL.
+
+- `tests/run.php` lance les cinq tests dans l’ordre et compte les échecs.
+- `tests/api.php` sert aux trois lectures HTTP : bases MySQL, bases PostgreSQL et
+  alertes. Il vérifie le statut 200, le JSON et la présence de la liste attendue.
+- `tests/mysql-backup-restore.php` et `tests/postgres-backup-restore.php` appellent
+  directement les services PHP. Ils créent des bases à suffixe aléatoire,
+  sauvegardent un produit témoin, restaurent et comparent les données attendues.
+  Ils tentent ensuite de supprimer leurs bases, leur dump et son dossier.
+
+Le conteneur s’arrête après la suite : `0` si tout réussit, `1` en cas d’échec,
+y compris au nettoyage. Il ne bloque pas le frontend si un test échoue.
+Le résultat communiqué est **5 tests exécutés, 0 échec(s).** La suite n’a pas été
+relancée pour cette mise à jour documentaire.
+
+Le [guide SafeBase](docs/SAFEBASE.md#tests-automatisés) détaille les commandes,
+les cinq noms de tests, leurs limites et les éléments pouvant rester après un échec.

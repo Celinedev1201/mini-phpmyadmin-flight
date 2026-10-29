@@ -125,13 +125,15 @@ Le conteneur temporaire est ensuite supprimé.
 ### 5. Démarrer les services
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
 Au premier lancement, Docker télécharge l’image MySQL et initialise
 son stockage.
 
-Le backend attend que le contrôle de santé de MySQL réussisse.
+Le backend attend que MySQL et PostgreSQL soient déclarés disponibles par leurs
+contrôles de santé. Le service `tests` attend ensuite aussi celui de l’API,
+puis lance automatiquement les cinq tests de `backend/tests/run.php`.
 
 ### 6. Vérifier les conteneurs
 
@@ -143,8 +145,11 @@ Résultat attendu :
 
 - MySQL et PostgreSQL : `Up` et `healthy`
 - Scheduler : `Up`
-- Backend : `Up`
+- Backend : `Up` et `healthy`
 - Frontend : `Up`
+- Tests : `Exited (0)` après réussite ; cet arrêt est normal.
+
+Utiliser `docker compose ps -a` pour voir aussi le conteneur `tests` arrêté.
 
 ## Accès à l’application
 
@@ -374,6 +379,34 @@ La demande arrive dans `routes/rows.php`, qui appelle `RowService::update()`.
 Après la réussite, `TableRows.jsx` recharge les lignes.
 
 ## Vérifications
+
+### Tests automatisés SafeBase
+
+Au démarrage avec `docker compose up -d --build`, le service `tests` exécute
+les tests après disponibilité de l’API, de MySQL et de PostgreSQL.
+Pour consulter le résultat ou relancer la suite :
+
+```bash
+docker compose logs tests
+docker compose run --rm tests
+```
+
+La seconde commande crée un conteneur temporaire, supprimé après son exécution.
+Résultat obtenu communiqué le 28 octobre 2026 : **5 tests exécutés, 0 échec(s).**
+Les tests n’ont pas été relancés pour cette mise à jour documentaire.
+
+La suite vérifie trois lectures HTTP (bases MySQL, bases PostgreSQL et alertes),
+puis deux sauvegardes/restaurations via les services PHP, avec une donnée témoin.
+Ces deux derniers tests créent des bases temporaires à suffixe aléatoire et tentent
+leur nettoyage ainsi que celui de leur sauvegarde. Des éléments peuvent rester
+si une opération échoue : voir le [détail des tests et du nettoyage](docs/SAFEBASE.md#tests-automatisés).
+
+Le conteneur s’arrête après la suite : code `0` si tout réussit, `1` si au moins
+un test échoue, y compris lors du nettoyage. Il ne redémarre pas automatiquement.
+Un échec de test ne bloque pas actuellement le frontend : celui-ci dépend du
+backend, pas de la réussite du service `tests`.
+
+### Syntaxe PHP, compilation et essais manuels
 
 ```bash
 docker compose exec -T backend sh -c 'find src public -name "*.php" -exec php -l {} \;'
