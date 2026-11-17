@@ -80,7 +80,7 @@ jobs:
 
           image="ghcr.io/${GITHUB_REPOSITORY,,}-$SERVICE:$tag"
 
-          docker build --target "$target" \
+          docker build --provenance=false --target "$target" \
             --label "org.opencontainers.image.source=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
             -t "$image" "./$SERVICE"
 
