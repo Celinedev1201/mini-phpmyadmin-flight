@@ -1,20 +1,19 @@
-# Image Node.js légère pour le frontend
-FROM node:24-alpine
+FROM node:24-alpine AS base
 
-# Dossier principal du frontend dans le conteneur
 WORKDIR /app
 
-# Copie d’abord les fichiers qui décrivent les dépendances
 COPY package*.json ./
-
-# Installe exactement les versions enregistrées dans package-lock.json
 RUN npm ci
 
-# Copie le reste du code React
 COPY . .
 
-# Port utilisé par le serveur Vite
-EXPOSE 5173
+FROM base AS build
+RUN npm run build
 
-# Lance Vite et autorise l’accès depuis l’extérieur du conteneur
+FROM nginx:alpine AS production
+COPY --from=build /app/dist/ /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+FROM base AS development
+EXPOSE 5173
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

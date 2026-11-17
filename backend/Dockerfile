@@ -1,5 +1,5 @@
 # PHP 8.3 sur Debian Bookworm
-FROM php:8.3-cli-bookworm
+FROM php:8.3-cli-bookworm AS base
 
 # Outils de développement et de planification
 RUN apt-get update \
@@ -47,3 +47,13 @@ EXPOSE 8000
 
 # Démarrage de l’API FlightPHP
 CMD ["php", "-S", "0.0.0.0:8000", "-t", "public", "public/index.php"]
+FROM base AS production
+
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+COPY public/ ./public/
+COPY src/ ./src/
+COPY bin/ ./bin/
+
+FROM base AS development

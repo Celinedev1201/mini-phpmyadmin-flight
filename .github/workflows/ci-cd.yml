@@ -38,3 +38,31 @@ jobs:
 
       - name: Exécuter les six tests fonctionnels
         run: docker compose run --rm tests
+
+  build-images:
+    name: Construire l’image ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    needs: functional-tests
+
+    strategy:
+      matrix:
+        service: [backend, frontend]
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Construire l’image Docker
+        env:
+          SERVICE: ${{ matrix.service }}
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            target=production
+            tag="$GITHUB_REF_NAME"
+          else
+            target=development
+            tag=dev
+          fi
+
+          docker build --target "$target" \
+            -t "safebase-$SERVICE:$tag" "./$SERVICE"
