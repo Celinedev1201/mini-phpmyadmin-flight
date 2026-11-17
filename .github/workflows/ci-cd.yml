@@ -9,9 +9,22 @@ on:
       - "v*"
 
 jobs:
+  unit-tests:
+    name: Tests unitaires PHP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Tester la validation des noms SQL
+        run: |
+          docker run --rm -v "$PWD/backend:/app:ro" -w /app php:8.3-cli-bookworm php tests/unit.php
+
   functional-tests:
     name: Tests fonctionnels MySQL et PostgreSQL
     runs-on: ubuntu-latest
+    needs: unit-tests
 
     steps:
       - name: Récupérer le code
