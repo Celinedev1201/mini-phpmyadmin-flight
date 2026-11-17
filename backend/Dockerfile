@@ -56,4 +56,4 @@ COPY public/ ./public/
 COPY src/ ./src/
 COPY bin/ ./bin/
 
-FROM base AS development
+FROM production AS development

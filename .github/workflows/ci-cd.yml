@@ -40,9 +40,13 @@ jobs:
         run: docker compose run --rm tests
 
   build-images:
-    name: Construire l’image ${{ matrix.service }}
+    name: Construire et publier l’image ${{ matrix.service }}
     runs-on: ubuntu-latest
     needs: functional-tests
+
+    permissions:
+      contents: read
+      packages: write
 
     strategy:
       matrix:
@@ -52,17 +56,32 @@ jobs:
       - name: Récupérer le code
         uses: actions/checkout@v4
 
-      - name: Construire l’image Docker
+      - name: Se connecter à GHCR
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s' "$GHCR_TOKEN" |
+            docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+
+      - name: Construire et publier l’image Docker
         env:
           SERVICE: ${{ matrix.service }}
         run: |
           if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             target=production
             tag="$GITHUB_REF_NAME"
-          else
+          elif [[ "$GITHUB_REF_NAME" == main ]]; then
             target=development
             tag=dev
+          else
+            target=development
+            tag=dev-test
           fi
 
+          image="ghcr.io/${GITHUB_REPOSITORY,,}-$SERVICE:$tag"
+
           docker build --target "$target" \
-            -t "safebase-$SERVICE:$tag" "./$SERVICE"
+            --label "org.opencontainers.image.source=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
+            -t "$image" "./$SERVICE"
+
+          docker push "$image"
