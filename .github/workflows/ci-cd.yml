@@ -1,0 +1,27 @@
+name: CI/CD - SafeBase
+
+on:
+  push:
+    branches:
+      - main
+      - tp-ci-cd
+    tags:
+      - "v*"
+
+jobs:
+  functional-tests:
+    name: Tests fonctionnels MySQL et PostgreSQL
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Préparer la configuration de test
+        run: cp .env.exemple .env
+
+      - name: Installer les dépendances PHP
+        run: docker compose run --rm --no-deps backend composer install --no-interaction
+
+      - name: Exécuter les six tests fonctionnels
+        run: docker compose run --rm tests
