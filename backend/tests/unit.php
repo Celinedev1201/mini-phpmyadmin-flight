@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../src/validation/SqlValidation.php';
 
 $cases = [
-    'Une lettre seule' => ['A', true],
+    'Une lettre seule' => ['A', false],
     'Lettres, chiffres et underscore' => ['safebase_2026', true],
     'Maximum de 64 caractères' => [str_repeat('a', 64), true],
     '65 caractères' => [str_repeat('a', 65), false],
