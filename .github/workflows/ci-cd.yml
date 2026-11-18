@@ -85,3 +85,45 @@ jobs:
             -t "$image" "./$SERVICE"
 
           docker push "$image"
+
+  notify-discord:
+    name: Notifier Discord
+    runs-on: ubuntu-latest
+    needs: [unit-tests, functional-tests, build-images]
+    if: ${{ always() }}
+
+    permissions:
+      actions: read
+
+    steps:
+      - name: Envoyer le résultat à Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: |
+          if jq -e 'all(.[]; . == "success")' <<< "$RESULTS" >/dev/null; then
+            status="✅ Succès"
+            details="Tests réussis et images publiées sur GHCR."
+          elif jq -e 'any(.[]; . == "failure")' <<< "$RESULTS" >/dev/null; then
+            status="❌ Échec"
+            details="$(gh api \
+              "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT/jobs" \
+              --jq '.jobs[] | select(.conclusion == "failure") |
+                    .name + " — " + ([.steps[] | select(.conclusion == "failure") | .name] | join(", "))' \
+              || true)"
+            details="${details:-Consulte les logs GitHub Actions.}"
+          else
+            status="⚪ Interrompu"
+            details="Exécution annulée ou jobs ignorés."
+          fi
+
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          message="$(printf '**SafeBase CI/CD — %s**\nBranche ou tag : `%s`\nCommit : `%s`\n%s\n%s' \
+            "$status" "$GITHUB_REF_NAME" "${GITHUB_SHA:0:7}" "$details" "$run_url")"
+
+          jq -n --arg content "$message" \
+            '{content: $content, allowed_mentions: {parse: []}}' |
+            curl --fail --silent --show-error \
+              -H 'Content-Type: application/json' \
+              --data-binary @- "$DISCORD_WEBHOOK_URL"
